@@ -4,7 +4,7 @@ import { config, fields, collection } from '@keystatic/core';
 export default config({
   storage:  import.meta.env.PROD
   ?{
-    kind: 'server',
+    kind: 'github',
     repo: 'dandingtangyuan/dandingtangyuan.github.io', // 替換成您的 GitHub 倉庫
   }
   :{

@@ -12,10 +12,10 @@ import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://dandingtangyuan.github.io',
+  site: 'https://dan-ding-tang-yuan-github-io.vercel.app',
 
-  // 保持靜態
-  output: 'static',
+  
+  output: 'server',
 
   integrations: [mdx(), sitemap(), keystatic(), react()],
   adapter: vercel(),
