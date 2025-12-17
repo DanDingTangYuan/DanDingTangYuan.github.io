@@ -2,13 +2,10 @@
 import { config, fields, collection } from '@keystatic/core';
 
 export default config({
-  storage:  import.meta.env.PROD
-  ?{
+  storage:
+  {
     kind: 'github',
     repo: 'DanDingTangYuan/DanDingTangYuan.github.io', // 替換成您的 GitHub 倉庫
-  }
-  :{
-    kind: 'local', // 開發時用 local，上線後我們會教您改成 'github'
   },
   collections: {
     posts: collection({
