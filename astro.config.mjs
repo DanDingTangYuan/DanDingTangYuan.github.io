@@ -16,6 +16,11 @@ export default defineConfig({
   trailingSlash: 'never',
   output: 'server',
 
-  integrations: [mdx(), sitemap(), keystatic(), react()],
+  integrations: [mdx(), sitemap(), react(),
+	keystatic({
+      config: {
+        secret: 'AkaneLoveMasterSecretKey20251314',
+      }}),
+  ],
   adapter: vercel(),
 });
