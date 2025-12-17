@@ -5,7 +5,10 @@ export default config({
   storage:
   {
     kind: 'github',
-    repo: 'DanDingTangYuan/DanDingTangYuan.github.io', // 替換成您的 GitHub 倉庫
+    repo: {
+        owner: 'DanDingTangYuan',
+        name: 'DanDingTangYuan.github.io',
+    } 
   },
   collections: {
     posts: collection({
