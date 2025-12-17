@@ -14,7 +14,6 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   site: 'https://dan-ding-tang-yuan-github-io.vercel.app',
 
-  
   output: 'server',
 
   integrations: [mdx(), sitemap(), keystatic(), react()],
