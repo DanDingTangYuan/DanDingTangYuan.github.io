@@ -13,7 +13,7 @@ export default config({
   collections: {
     posts: collection({
       label: '小說連載',
-      slugField: 'slug',
+      slugField: 'title',
       path: 'src/content/blog/*', // 對應官方模板的路徑
       format: { contentField: 'content' },
       schema: {
