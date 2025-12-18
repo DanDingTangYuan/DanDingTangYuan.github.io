@@ -1,0 +1,101 @@
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+
+    /* --- 初始狀態：在 Hero 內的樣子 (半透明) --- */
+    background-color: rgba(255, 255, 255, 0.5); /* 50% 透明度的白色 */
+    backdrop-filter: blur(5px); /* (選用) 毛玻璃效果，讓背景模糊，質感加分 */
+    box-shadow: none; /* 初始狀態可能不需要陰影 */
+
+    /* --- 動畫設定 --- */
+    /* transform 控制收合，background-color 控制變色，box-shadow 控制陰影 */
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease;
+    
+    /* 預設顯示 */
+    transform: translateY(0);
+}
+
+header.visible {
+    transform: translateY(0); /* 回到原位 */
+}
+
+header.nav-hidden {
+     transform: translateY(-100%);
+}
+
+/* --- 狀態 2：實色 (離開 Hero 後的樣子) --- */
+header.nav-solid {
+    background-color: rgba(255, 255, 255, 1); /* 變成 100% 不透明白色 */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* 此時才出現陰影 */
+}
+
+body, html {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100%;
+        overflow-x: hidden; /* 防止任何意外的橫向捲軸 */
+}
+
+  /* 2. 改變盒模型計算方式 (非常重要！) */
+  /* 這樣設定後，padding 就不會把寬度撐大，導致突出去 */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* vh = viewport height (視窗高度) */
+    
+}
+
+main {
+    flex: 1; 
+    width: 100%; 
+    display: flex;          /* 讓 main 也變成 flex 容器 */
+    padding: 0;        /* 確保 main 本身沒有內距 */
+    flex-direction: column; /* 垂直排列 */
+}
+
+.hero {
+    height: 100vh; /* 高度佔滿 */
+    width: 100%;  /* 寬度佔滿 */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 垂直置中 */
+    align-items: center; /* 水平靠左 (若要置中改成 center) */
+
+    margin: 0;
+    padding: 0; 
+    box-sizing: border-box; /* 確保 padding 不會撐爆寬度 */
+
+	
+	border: 1px solid #000;
+    
+}
+
+.hero-content {
+    max-width: 960px; /* 設定一個適合的內容寬度 */
+    width: 100%;      /* 確保寬度是 100% */
+    margin: 0 auto;   /* 讓內容區塊置中 */
+    padding: 2rem;    /* 在內容區塊內加上 padding */
+    text-align: center; /* 文字本身置中 */
+    
+    /* 如果你想讓文字顏色變更深，也可以在這裡設定 */
+    /* color: #333; */ 
+}
+
+.dummy-content {
+    /* 關鍵：設定最小高度為 100vh */
+    /* 這樣你的網頁總高度就會變成：Hero(100vh) + Content(100vh) + Footer */
+    min-height: 100vh; 
+    
+    background-color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+}

@@ -2,7 +2,9 @@
 import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro"; // 引入
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import "../styles/index.css";
 ---
 
 <!doctype html>
@@ -12,9 +14,66 @@ import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
   </head>
   <body>
     <Header />
+
     <main>
-      <h1>ようこそ、吾輩の世界へ</h1>
-      <Footer />
+      <section class="hero">
+        <div class="hero-content">
+          <h1 class="title">你好，我是 Astro。</h1>
+          <p class="subtitle">
+            這是一個極簡主義的 Hero 區塊範例，使用了 Bear Blog 的設計語彙。
+            專注於內容，移除不必要的干擾。
+          </p>
+        </div>
+        <div class="hero-image">
+          <!-- 這裡放一張圖片或簡單的色塊圖形 -->
+          <div class="placeholder-img"></div>
+        </div>
+      </section>
+      <div class="dummy-content">
+        <h2>這裡是未來的精彩內容</h2>
+        <p>向下滾動來測試導覽列效果...</p>
+      </div>
     </main>
+    <Footer />
   </body>
 </html>
+
+<script>
+  // 1. 抓取 Header 和 Hero 元素
+  const header = document.querySelector("header");
+  const hero = document.querySelector(".hero");
+
+  // 2. 記錄「上一次」的滾動位置，預設為 0
+  let lastScrollY = window.scrollY;
+
+  // 確保元素都存在才執行
+  if (header && hero) {
+    window.addEventListener("scroll", () => {
+      const currentScrollY = window.scrollY;
+      const heroHeight = hero.offsetHeight; // 抓取 Hero 區塊的高度
+
+      // --- 邏輯 1：控制顯示/隱藏 (依據方向) ---
+      // 只有當滾動超過一點點 (50px) 後才開始做收合動作，避免在頂部微調時一直閃
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        // 向下滾 -> 隱藏
+        header.classList.add("nav-hidden");
+      } else {
+        // 向上滾 -> 顯示
+        header.classList.remove("nav-hidden");
+      }
+
+      // --- 邏輯 2：控制顏色/透明度 (依據位置) ---
+      // 如果滾動距離 超過 Hero 的高度 (減去一點緩衝，例如 Header 自身高度，視覺比較順)
+      if (currentScrollY > heroHeight - 80) {
+        // 離開 Hero -> 變成實色
+        header.classList.add("nav-solid");
+      } else {
+        // 還在 Hero 內 -> 移除實色 (變回 CSS 預設的半透明)
+        header.classList.remove("nav-solid");
+      }
+
+      // 更新最後滾動位置
+      lastScrollY = currentScrollY;
+    });
+  }
+</script>
