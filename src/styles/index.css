@@ -69,7 +69,7 @@ main {
     height: 100vh; /* 高度佔滿 */
     width: 100%;  /* 寬度佔滿 */
 
-    background-image: url('src/assets/hero_background.jpg'); /* 替換成你的背景圖片路徑 */
+    
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
