@@ -1,6 +1,7 @@
 // @ts-check
 
 import mdx from '@astrojs/mdx';
+import markdoc from '@astrojs/markdoc';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 // 引入 Keystatic
@@ -13,11 +14,11 @@ import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://dan-ding-tang-yuan-github-io.vercel.app',
+  site: 'https://kotonoha-shiori.dev',
   trailingSlash: 'never',
-  output: 'server',
+  output: 'static',
 
-  integrations: [mdx(), sitemap(), react(),keystatic(),
+  integrations: [mdx(), markdoc(), sitemap(), react(), keystatic(),
   ],
   adapter: vercel(),
 });

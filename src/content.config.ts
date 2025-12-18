@@ -3,7 +3,7 @@ import { glob } from 'astro/loaders';
 
 const devlog = defineCollection({
 	// Load Markdown and MDX files in the `src/content/devlog/` directory.
-	loader: glob({ base: './src/content/devlog', pattern: '**/*.{md,mdx}' }),
+	loader: glob({ base: './src/content/devlog', pattern: '**/*.{md,mdx,mdoc}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
 		title: z.string(),
@@ -21,7 +21,7 @@ const devlog = defineCollection({
 
 const blog = defineCollection({
 	// Load Markdown and MDX files in the `src/content/blog/` directory.
-	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
+	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx,mdoc}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
 		title: z.string(),
@@ -37,7 +37,7 @@ const blog = defineCollection({
 
 const story = defineCollection({
 	// Load Markdown and MDX files in the `src/content/story/` directory.
-	loader: glob({ base: './src/content/story', pattern: '**/*.{md,mdx}' }),
+	loader: glob({ base: './src/content/story', pattern: '**/*.{md,mdx,mdoc}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
 		title: z.string(), 
@@ -53,7 +53,7 @@ const story = defineCollection({
 
 const wiki = defineCollection({
 	// Load Markdown and MDX files in the `src/content/wiki/` directory.
-	loader: glob({ base: './src/content/wiki', pattern: '**/*.{md,mdx}' }),
+	loader: glob({ base: './src/content/wiki', pattern: '**/*.{md,mdx,mdoc}' }),
 	// Type-check frontmatter using a schema
 	schema: z.object({
 		title: z.string(), 

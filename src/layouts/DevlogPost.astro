@@ -1,0 +1,197 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
+
+type Props = CollectionEntry<"devlog">["data"];
+
+const { 
+  title, 
+  description, 
+  pubDate, 
+  updatedDate, 
+  version, 
+  repoURL, 
+  tags, 
+  projectStatus, 
+  thumbnail 
+} = Astro.props;
+
+const statusLabels = {
+  development: '開發中',
+  maintenance: '維護中',
+  fixing: '修理中',
+  completed: '已完成',
+  abandoned: '已棄坑'
+};
+---
+
+<html lang="en">
+  <head>
+    <BaseHead title={title} description={description} />
+    <style>
+      main {
+        width: calc(100% - 2em);
+        max-width: 100%;
+        margin: 0;
+      }
+      .hero-image {
+        width: 100%;
+      }
+      .hero-image img {
+        display: block;
+        margin: 0 auto;
+        border-radius: 12px;
+        box-shadow: var(--box-shadow);
+      }
+      .prose {
+        width: 720px;
+        max-width: calc(100% - 2em);
+        margin: auto;
+        padding: 1em;
+        color: rgb(var(--gray-dark));
+      }
+      .title {
+        margin-bottom: 1em;
+        padding: 1em 0;
+        text-align: center;
+        line-height: 1;
+      }
+      .title h1 {
+        margin: 0 0 0.5em 0;
+      }
+      .date {
+        margin-bottom: 0.5em;
+        color: rgb(var(--gray));
+      }
+      .last-updated-on {
+        font-style: italic;
+      }
+      .devlog-meta {
+        background: rgb(var(--gray-light));
+        border-radius: 8px;
+        padding: 1em;
+        margin: 1em 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1em;
+      }
+      .meta-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .meta-label {
+        font-weight: bold;
+        color: rgb(var(--gray-dark));
+        margin-bottom: 0.25em;
+      }
+      .meta-value {
+        color: rgb(var(--gray));
+      }
+      .status-badge {
+        display: inline-block;
+        padding: 0.25em 0.5em;
+        border-radius: 4px;
+        font-size: 0.875em;
+        font-weight: bold;
+      }
+      .status-development { background: #fef3c7; color: #92400e; }
+      .status-maintenance { background: #dbeafe; color: #1e40af; }
+      .status-fixing { background: #fecaca; color: #dc2626; }
+      .status-completed { background: #d1fae5; color: #065f46; }
+      .status-abandoned { background: #f3f4f6; color: #6b7280; }
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+      }
+      .tag {
+        background: rgb(var(--accent));
+        color: white;
+        padding: 0.25em 0.5em;
+        border-radius: 4px;
+        font-size: 0.875em;
+      }
+      .repo-link {
+        color: rgb(var(--accent));
+        text-decoration: none;
+      }
+      .repo-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <Header />
+    <main>
+      <article>
+        <div class="prose">
+          <div class="title">
+            <div class="date">
+              <FormattedDate date={pubDate} />
+              {
+                updatedDate && (
+                  <div class="last-updated-on">
+                    Last updated on <FormattedDate date={updatedDate} />
+                  </div>
+                )
+              }
+            </div>
+            <h1>{title}</h1>
+            <hr />
+          </div>
+
+          {thumbnail && (
+            <div class="hero-image">
+              <img src={thumbnail} alt={title} />
+            </div>
+          )}
+
+          <div class="devlog-meta">
+            {version && (
+              <div class="meta-item">
+                <span class="meta-label">版本</span>
+                <span class="meta-value">{version}</span>
+              </div>
+            )}
+            
+            {projectStatus && (
+              <div class="meta-item">
+                <span class="meta-label">專案狀態</span>
+                <span class={`status-badge status-${projectStatus}`}>
+                  {statusLabels[projectStatus]}
+                </span>
+              </div>
+            )}
+
+            {repoURL && (
+              <div class="meta-item">
+                <span class="meta-label">專案連結</span>
+                <a href={repoURL} class="repo-link" target="_blank" rel="noopener noreferrer">
+                  查看專案
+                </a>
+              </div>
+            )}
+
+            {tags && tags.length > 0 && (
+              <div class="meta-item">
+                <span class="meta-label">技術標籤</span>
+                <div class="tags">
+                  {tags.map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <slot />
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
+</html>

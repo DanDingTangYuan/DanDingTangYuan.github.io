@@ -1,14 +1,29 @@
 ---
 interface Props {
-	date: Date;
+	date: Date | string | undefined;
 }
 
 const { date } = Astro.props;
+
+// 確保 date 存在且是有效的 Date 對象
+let dateObj: Date;
+if (!date) {
+	dateObj = new Date();
+} else if (date instanceof Date) {
+	dateObj = date;
+} else {
+	dateObj = new Date(date);
+}
+
+// 檢查日期是否有效
+if (isNaN(dateObj.getTime())) {
+	dateObj = new Date();
+}
 ---
 
-<time datetime={date.toISOString()}>
+<time datetime={dateObj.toISOString()}>
 	{
-		date.toLocaleDateString('en-us', {
+		dateObj.toLocaleDateString('en-us', {
 			year: 'numeric',
 			month: 'short',
 			day: 'numeric',

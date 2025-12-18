@@ -1,0 +1,43 @@
+---
+import { getCollection, render } from "astro:content";
+
+const devlogPosts = await getCollection("devlog");
+console.log("Devlog posts found:", devlogPosts.length);
+
+// 測試渲染第一篇文章
+if (devlogPosts.length > 0) {
+    const firstPost = devlogPosts[0];
+    console.log("First post data:", {
+        id: firstPost.id,
+        title: firstPost.data.title,
+        pubDate: firstPost.data.pubDate,
+        pubDateType: typeof firstPost.data.pubDate,
+        updatedDate: firstPost.data.updatedDate,
+        updatedDateType: typeof firstPost.data.updatedDate
+    });
+    
+    try {
+        const { Content } = await render(firstPost);
+        console.log("Content component created successfully");
+    } catch (error) {
+        console.error("Error rendering content:", error);
+    }
+}
+---
+
+<html>
+<head>
+    <title>Test Devlog</title>
+</head>
+<body>
+    <h1>Devlog Test</h1>
+    <p>Found {devlogPosts.length} devlog posts:</p>
+    <ul>
+        {devlogPosts.map(post => (
+            <li>
+                <strong>{post.data.title}</strong> - {post.id}
+            </li>
+        ))}
+    </ul>
+</body>
+</html>

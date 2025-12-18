@@ -1,0 +1,46 @@
+---
+import { getCollection, render } from "astro:content";
+
+const devlogPosts = await getCollection("devlog");
+let Content = null;
+let error = null;
+
+if (devlogPosts.length > 0) {
+    try {
+        const firstPost = devlogPosts[0];
+        const rendered = await render(firstPost);
+        Content = rendered.Content;
+        console.log("Successfully rendered devlog content");
+    } catch (e) {
+        error = e;
+        console.error("Error rendering devlog:", e);
+    }
+}
+---
+
+<html>
+<head>
+    <title>Test Render</title>
+</head>
+<body>
+    <h1>Devlog Render Test</h1>
+    
+    {error && (
+        <div style="color: red; background: #ffe6e6; padding: 1em; margin: 1em 0;">
+            <h2>Error:</h2>
+            <pre>{error.toString()}</pre>
+        </div>
+    )}
+    
+    {Content && (
+        <div style="border: 1px solid #ccc; padding: 1em; margin: 1em 0;">
+            <h2>Rendered Content:</h2>
+            <Content />
+        </div>
+    )}
+    
+    {!Content && !error && (
+        <p>No devlog posts found</p>
+    )}
+</body>
+</html>

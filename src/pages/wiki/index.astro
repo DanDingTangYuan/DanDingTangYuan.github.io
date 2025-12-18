@@ -91,7 +91,7 @@ const posts = (await getCollection("wiki")).sort();
           {
             posts.map((post) => (
               <li>
-                <a href={`/wiki/${post.id}/`}>
+                <a href={`/wiki/${post.id}`}>
                   <h4 class="title">{post.data.title}</h4>
                 </a>
               </li>
