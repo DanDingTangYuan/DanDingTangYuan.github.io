@@ -61,33 +61,145 @@ main {
     flex-direction: column; /* 垂直排列 */
 }
 
+.title {
+    text-align: center;
+}
+
 .hero {
     height: 100vh; /* 高度佔滿 */
     width: 100%;  /* 寬度佔滿 */
+
+    background-image: url('src/assets/hero_background.jpg'); /* 替換成你的背景圖片路徑 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
     display: flex;
     flex-direction: column;
     justify-content: center; /* 垂直置中 */
     align-items: center; /* 水平靠左 (若要置中改成 center) */
 
-    margin: 0;
-    padding: 0; 
-    box-sizing: border-box; /* 確保 padding 不會撐爆寬度 */
-
-	
-	border: 1px solid #000;
-    
+    position: relative;
 }
 
-.hero-content {
-    max-width: 960px; /* 設定一個適合的內容寬度 */
-    width: 100%;      /* 確保寬度是 100% */
-    margin: 0 auto;   /* 讓內容區塊置中 */
-    padding: 2rem;    /* 在內容區塊內加上 padding */
-    text-align: center; /* 文字本身置中 */
+.hero-card {
+    position: relative; /* 讓裡面的 blob 可以絕對定位 */
+    display: flex;
+    flex-direction: column; /* 垂直排列 */
+    justify-content: center; /* 垂直置中 */
+    align-items: center; /* 水平置中 */
+    text-decoration: none; /* 移除連結底線 */
+    text-align: center;
+    z-index: 10;
+    color: #333;
+
+    width: 400px;       /* 設定內容區塊寬度 */
+    height: 400px;     /* 設定內容區塊高度 */
     
-    /* 如果你想讓文字顏色變更深，也可以在這裡設定 */
-    /* color: #333; */ 
+    cursor: pointer;
+    background: transparent; /* 容器本身透明，靠 blob 顯色 */
+    
+
+}
+
+.hero-card:hover .blob{
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.text-content {
+    position: relative;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.blob {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    background-color: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.5s ease;
+
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.blob-1 {
+    animation: rotate-blob 4s linear infinite;
+    z-index: 1;
+}
+
+.blob-2 {
+    animation: rotate-blob 6s linear infinite;
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: rotate(45deg);
+}
+
+.blob-3 {
+    animation: rotate-blob 8s linear infinite;
+    z-index: 3;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.blob-4 {
+    animation: rotate-blob 12s linear infinite;
+    z-index: 4;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: rotate(60deg);
+}
+
+@keyframes rotate-blob {
+    0% {
+        transform: rotate(0deg);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+    33% {
+        border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;
+    }
+    66% {
+        border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%;
+    }
+    100% {
+        transform: rotate(360deg);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+}
+
+@keyframes rotate-blob-reverse {
+    0% {
+        transform: rotate(360deg);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+    33% {
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+    66% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+    100% {
+        transform: rotate(0deg);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+}
+
+.scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    color: white;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
 }
 
 .dummy-content {

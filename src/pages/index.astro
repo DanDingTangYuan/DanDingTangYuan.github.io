@@ -17,19 +17,26 @@ import "../styles/index.css";
 
     <main>
       <section class="hero">
-        <div class="hero-content">
-          <h1 class="title">你好，我是 Astro。</h1>
-          <p class="subtitle">
-            這是一個極簡主義的 Hero 區塊範例，使用了 Bear Blog 的設計語彙。
-            專注於內容，移除不必要的干擾。
-          </p>
-        </div>
+        <a href="#hero-content-start" class="hero-card">
+          <div id="hero-btn">
+            <span class="blob blob-1"></span>
+            <span class="blob blob-2"></span>
+            <span class="blob blob-3"></span>
+            <span class="blob blob-4"></span>
+
+            <div class="text-content">
+              <h1 class="title">言の葉の栞へ</h1>
+              <h1 class="title">ようこそ</h1>
+            </div>
+          </div>
+        </a>
         <div class="hero-image">
           <!-- 這裡放一張圖片或簡單的色塊圖形 -->
           <div class="placeholder-img"></div>
         </div>
       </section>
-      <div class="dummy-content">
+
+      <div class="dummy-content" id="hero-content-start">
         <h2>這裡是未來的精彩內容</h2>
         <p>向下滾動來測試導覽列效果...</p>
       </div>
@@ -50,6 +57,7 @@ import "../styles/index.css";
   if (header && hero) {
     window.addEventListener("scroll", () => {
       const currentScrollY = window.scrollY;
+      // @ts-ignore
       const heroHeight = hero.offsetHeight; // 抓取 Hero 區塊的高度
 
       // --- 邏輯 1：控制顯示/隱藏 (依據方向) ---
@@ -77,3 +85,16 @@ import "../styles/index.css";
     });
   }
 </script>
+
+<style>
+  /* 為了讓滑動停下來的位置剛好避開 Header (如果 header 會擋住標題的話) */
+  #content-start {
+    scroll-margin-top: 80px; /* 假設你的 Header 高度是 80px */
+  }
+
+  #content-start h1 {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem 0;
+    color: #2c3e50;
+  }
+</style>
