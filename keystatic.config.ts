@@ -14,7 +14,7 @@ export default config({
         devlog: collection({
             label: 'Devlog 開發日誌',
             slugField: 'title',
-            path: 'src/content/devlog/[language]/*', 
+            path: 'src/content/devlog/zh/*', 
             format: { contentField: 'content' },    // 啟用 Markdown 編輯器
             schema: {
                 languages: fields.array(
@@ -64,7 +64,7 @@ export default config({
         blog: collection({
             label: 'Blog 部落格文章',
             slugField: 'title',
-            path: 'src/content/blog/[language]/*', 
+            path: 'src/content/blog/zh/*', 
             format: { contentField: 'content' },
             schema: {
                 languages: fields.array(
@@ -102,7 +102,7 @@ export default config({
         story: collection({
             label: 'Story 小說/故事連載',
             slugField: 'title',
-            path: 'src/content/story/[language]/*', 
+            path: 'src/content/story/zh/*', 
             format: { contentField: 'content' },
             schema: {
                 languages: fields.array(
@@ -150,7 +150,7 @@ export default config({
         wiki: collection({
             label: '📚 Wiki | 設定集',
             slugField: 'title',
-            path: 'src/content/wiki/[language]/*',
+            path: 'src/content/wiki/zh/*',
             format: { contentField: 'content' },
             schema: {
                 languages: fields.array(
