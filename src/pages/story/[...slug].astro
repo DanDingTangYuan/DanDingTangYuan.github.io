@@ -1,38 +1,38 @@
 ---
 /**
- * Blog 單篇文章頁面 (blog/[...slug].astro)
+ * Story 單篇文章頁面 (story/[...slug].astro)
  * 
  * 用途：
- * - 顯示單篇 Blog 文章的完整內容
- * - 動態生成所有 Blog 文章的頁面
- * - 使用 BlogPost 佈局提供統一的頁面風格
+ * - 顯示單篇 Story 小說/故事連載的完整內容
+ * - 動態生成所有 Story 文章的頁面
+ * - 使用 StoryPost 佈局提供統一的頁面風格
  * - 支援多語言路由
  * 
- * 路由：/blog/[語言]/[文章-id]
+ * 路由：/story/[語言]/[文章-id]
  * 
  * 例如：
- * - /blog/zh/my-first-post
- * - /blog/ja/astro-tutorial
+ * - /story/zh/my-novel-chapter-1
+ * - /story/ja/fantasy-series-episode-5
  */
 
 import { type CollectionEntry, getCollection, render } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
-import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE } from '../../i18n/config';
+import StoryPost from '../../layouts/StoryPost.astro';
+import { SUPPORTED_LANGUAGES } from '../../i18n/config';
 
 /**
  * 生成靜態路徑
- * Astro 會為每篇 Blog 文章的每個語言版本生成一個靜態頁面
+ * Astro 會為每篇 Story 文章的每個語言版本生成一個靜態頁面
  */
 export async function getStaticPaths() {
-	// 獲取所有 Blog 文章
-	const posts = await getCollection('blog');
+	// 獲取所有 Story 文章
+	const posts = await getCollection('story');
 	
 	// 為每篇文章生成路由
 	// 說明：
 	// - 每個文章只生成一個路由
 	// - 文章 ID 格式：'zh/my-post' 或 'ja/my-post'
-	// - 路由會是 /blog/zh/my-post 或 /blog/ja/my-post
-	// - 如果日文版本不存在，訪問 /blog/ja/my-post 時會自動使用中文版本
+	// - 路由會是 /story/zh/my-post 或 /story/ja/my-post
+	// - 如果日文版本不存在，訪問 /story/ja/my-post 時會自動使用中文版本
 	//   （這個 fallback 邏輯在 getStaticPaths 中實現）
 	
 	const paths = [];
@@ -65,7 +65,7 @@ export async function getStaticPaths() {
 			
 			if (post) {
 				paths.push({
-					params: { slug: `${lang}/${slug}` }, // URL 參數：/blog/zh/my-post 或 /blog/ja/my-post
+					params: { slug: `${lang}/${slug}` }, // URL 參數：/story/zh/my-post 或 /story/ja/my-post
 					props: post, // 傳遞給組件的 Props
 				});
 			}
@@ -75,8 +75,8 @@ export async function getStaticPaths() {
 	return paths;
 }
 
-/** Blog 文章的類型定義 */
-type Props = CollectionEntry<'blog'>;
+/** Story 文章的類型定義 */
+type Props = CollectionEntry<'story'>;
 
 /** 
  * 獲取當前文章數據
@@ -88,8 +88,8 @@ const post = Astro.props;
 const { Content } = await render(post);
 ---
 
-{/* 使用 BlogPost 佈局顯示文章 */}
-<BlogPost {...post.data}>
+{/* 使用 StoryPost 佈局顯示文章 */}
+<StoryPost {...post.data}>
 	{/* 文章內容 */}
 	<Content />
-</BlogPost>
+</StoryPost>

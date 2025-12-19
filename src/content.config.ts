@@ -17,6 +17,10 @@ import { glob } from 'astro/loaders';
 /**
  * DevLog 集合 - 開發日誌
  * 用於記錄項目開發進度和技術筆記
+ * 
+ * 多語言支援：
+ * - 內容按語言分類在子資料夾中
+ * - 例如：src/content/devlog/zh/post.md、src/content/devlog/ja/post.md
  */
 const devlog = defineCollection({
 	loader: glob({ base: './src/content/devlog', pattern: '**/*.{md,mdx,mdoc}' }),
@@ -37,6 +41,10 @@ const devlog = defineCollection({
 /**
  * Blog 集合 - 部落格文章
  * 用於發布一般性的文章和想法
+ * 
+ * 多語言支援：
+ * - 內容按語言分類在子資料夾中
+ * - 例如：src/content/blog/zh/post.md、src/content/blog/ja/post.md
  */
 const blog = defineCollection({
 	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx,mdoc}' }),
@@ -55,6 +63,10 @@ const blog = defineCollection({
 /**
  * Story 集合 - 小說/故事連載
  * 用於發布創意寫作和故事連載
+ * 
+ * 多語言支援：
+ * - 內容按語言分類在子資料夾中
+ * - 例如：src/content/story/zh/post.md、src/content/story/ja/post.md
  */
 const story = defineCollection({
 	loader: glob({ base: './src/content/story', pattern: '**/*.{md,mdx,mdoc}' }),
@@ -74,6 +86,10 @@ const story = defineCollection({
 /**
  * Wiki 集合 - 設定集/百科
  * 用於存儲世界觀設定、角色資料等
+ * 
+ * 多語言支援：
+ * - 內容按語言分類在子資料夾中
+ * - 例如：src/content/wiki/zh/post.md、src/content/wiki/ja/post.md
  */
 const wiki = defineCollection({
 	loader: glob({ base: './src/content/wiki', pattern: '**/*.{md,mdx,mdoc}' }),

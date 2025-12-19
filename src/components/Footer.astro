@@ -6,7 +6,10 @@
  * - 顯示網站頁腳
  * - 顯示版權信息和當前年份
  * - 顯示免責聲明
+ * - 提供語言切換功能（暫時註解，等待日文翻譯完成後啟用）
  */
+
+// import LanguageSwitcher from "./LanguageSwitcher.astro";
 
 /** 獲取當前年份用於版權信息 */
 const today = new Date();
@@ -14,18 +17,61 @@ const today = new Date();
 
 {/* 頁腳容器 */}
 <footer>
-  {/* 版權信息 - 自動更新年份 */}
-  &copy; {today.getFullYear()} Maid by Kotonomi. All rights reserved.
-  <br />
-  {/* 免責聲明 */}
-  未經許可，禁止轉載本站之任何內容。
+  {/* 語言切換 - 暫時註解，等待日文翻譯完成後啟用 */}
+  {/* <div class="footer-language">
+    <LanguageSwitcher />
+  </div> */}
+
+  {/* 版權信息和免責聲明 */}
+  <div class="footer-content">
+    {/* 版權信息 - 自動更新年份 */}
+    &copy; {today.getFullYear()} Maid by Kotonomi. All rights reserved.
+    <br />
+    {/* 免責聲明 */}
+    未經許可，禁止轉載本站之任何內容。
+  </div>
 </footer>
 
 <style>
+  /* 
+     頁腳容器
+     
+     說明：
+     - 內邊距：上下 2em，左右 1em，下方 6em
+     - 背景顏色：淺灰色
+     - 文字顏色：灰色
+     - 文字居中
+  */
   footer {
+    /* 內邊距 */
     padding: 2em 1em 6em 1em;
+    /* 背景顏色 */
     background: #f8f9fa;
+    /* 文字顏色 */
     color: rgb(var(--gray));
+    /* 文字居中 */
     text-align: center;
+  }
+
+  /* 
+     語言切換容器 - 暫時註解
+     
+     說明：
+     - 下方邊距：2em
+     - 邊框下方：1px 淺邊框色
+     - 內邊距下方：1em
+  */
+  /* .footer-language {
+    margin-bottom: 2em;
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 1em;
+  } */
+
+  /* 
+     頁腳內容
+  */
+  .footer-content {
+    /* 上方邊距 */
+    margin-top: 0;
   }
 </style>

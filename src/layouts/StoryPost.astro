@@ -1,0 +1,239 @@
+---
+/**
+ * StoryPost 佈局
+ * 
+ * 用途：
+ * - 為 Story 小說/故事連載提供統一的頁面佈局
+ * - 顯示故事特有的信息（系列名、章節號、作者等）
+ * - 提供文章內容的容器
+ * 
+ * 特性：
+ * - 顯示系列名稱
+ * - 顯示章節號
+ * - 顯示故事標籤
+ * - 顯示縮圖
+ * - 顯示發布日期和更新日期
+ * 
+ * 使用方式：
+ * <StoryPost {...post.data}>
+ *   <Content />
+ * </StoryPost>
+ */
+
+import "../styles/global.css";
+import type { CollectionEntry } from "astro:content";
+import Footer from "../components/Footer.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
+import { SITE_TITLE } from "../consts";
+
+/** Story 文章的 frontmatter 類型 */
+type Props = CollectionEntry<"story">["data"];
+
+/** 解構文章數據 */
+const { 
+  title, 
+  pubDate, 
+  updatedDate, 
+  series, 
+  chapter, 
+  tags, 
+  coverImage 
+} = Astro.props;
+
+/** 生成規範 URL，用於 SEO */
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html lang="en">
+  <head>
+    {/* 全局元數據 - 字符編碼和視窗設置 */}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    {/* 網站圖標和 Sitemap */}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {/* RSS 訂閱連結 */}
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={SITE_TITLE}
+      href={new URL("rss.xml", Astro.site)}
+    />
+
+    {/* Astro 生成器標籤 */}
+    <meta name="generator" content={Astro.generator} />
+
+    {/* 字體預加載 - 提高頁面加載速度 */}
+    <link
+      rel="preload"
+      href="/fonts/atkinson-regular.woff"
+      as="font"
+      type="font/woff"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/atkinson-bold.woff"
+      as="font"
+      type="font/woff"
+      crossorigin
+    />
+
+    {/* 規範 URL - 用於 SEO，告訴搜尋引擎這是主要版本 */}
+    <link rel="canonical" href={canonicalURL} />
+
+    {/* 主要 Meta 標籤 - SEO 相關 */}
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={title} />
+
+    {/* Open Graph Meta 標籤 - 用於 Facebook 和其他社交媒體分享 */}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={title} />
+    {coverImage && <meta property="og:image" content={coverImage} />}
+
+    {/* Twitter Card Meta 標籤 - 用於 Twitter 分享 */}
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={title} />
+    {coverImage && <meta property="twitter:image" content={coverImage} />}
+    <style>
+      main {
+        width: calc(100% - 2em);
+        max-width: 100%;
+        margin: 0;
+      }
+      .hero-image {
+        width: 100%;
+      }
+      .hero-image img {
+        display: block;
+        margin: 0 auto;
+        border-radius: 12px;
+        box-shadow: var(--box-shadow);
+      }
+      .prose {
+        width: 720px;
+        max-width: calc(100% - 2em);
+        margin: auto;
+        padding: 1em;
+        color: rgb(var(--gray-dark));
+      }
+      .title {
+        margin-bottom: 1em;
+        padding: 1em 0;
+        text-align: center;
+        line-height: 1;
+      }
+      .title h1 {
+        margin: 0 0 0.5em 0;
+      }
+      .date {
+        margin-bottom: 0.5em;
+        color: rgb(var(--gray));
+      }
+      .last-updated-on {
+        font-style: italic;
+      }
+      .story-meta {
+        background: rgb(var(--gray-light));
+        border-radius: 8px;
+        padding: 1em;
+        margin: 1em 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1em;
+      }
+      .meta-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .meta-label {
+        font-weight: bold;
+        color: rgb(var(--gray-dark));
+        margin-bottom: 0.25em;
+      }
+      .meta-value {
+        color: rgb(var(--gray));
+      }
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+      }
+      .tag {
+        background: rgb(var(--accent));
+        color: white;
+        padding: 0.25em 0.5em;
+        border-radius: 4px;
+        font-size: 0.875em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <Header />
+    <main>
+      <article>
+        <div class="prose">
+          <div class="title">
+            <div class="date">
+              <FormattedDate date={pubDate} />
+              {
+                updatedDate && (
+                  <div class="last-updated-on">
+                    Last updated on <FormattedDate date={updatedDate} />
+                  </div>
+                )
+              }
+            </div>
+            <h1>{title}</h1>
+            <hr />
+          </div>
+
+          {coverImage && (
+            <div class="hero-image">
+              <img src={coverImage} alt={title} />
+            </div>
+          )}
+
+          <div class="story-meta">
+            {series && (
+              <div class="meta-item">
+                <span class="meta-label">系列</span>
+                <span class="meta-value">{series}</span>
+              </div>
+            )}
+            
+            {chapter && (
+              <div class="meta-item">
+                <span class="meta-label">章節</span>
+                <span class="meta-value">第 {chapter} 章</span>
+              </div>
+            )}
+
+            {tags && tags.length > 0 && (
+              <div class="meta-item">
+                <span class="meta-label">標籤</span>
+                <div class="tags">
+                  {tags.map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <slot />
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
+</html>

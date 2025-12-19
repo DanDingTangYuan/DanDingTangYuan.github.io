@@ -1,0 +1,95 @@
+---
+/**
+ * Wiki 單篇條目頁面 (wiki/[...slug].astro)
+ * 
+ * 用途：
+ * - 顯示單篇 Wiki 設定集/百科條目的完整內容
+ * - 動態生成所有 Wiki 條目的頁面
+ * - 使用 WikiPost 佈局提供統一的頁面風格
+ * - 支援多語言路由
+ * 
+ * 路由：/wiki/[語言]/[條目-id]
+ * 
+ * 例如：
+ * - /wiki/zh/character-profile
+ * - /wiki/ja/world-setting
+ */
+
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import WikiPost from '../../layouts/WikiPost.astro';
+import { SUPPORTED_LANGUAGES } from '../../i18n/config';
+
+/**
+ * 生成靜態路徑
+ * Astro 會為每篇 Wiki 條目的每個語言版本生成一個靜態頁面
+ */
+export async function getStaticPaths() {
+	// 獲取所有 Wiki 條目
+	const posts = await getCollection('wiki');
+	
+	// 為每篇條目生成路由
+	// 說明：
+	// - 每個條目只生成一個路由
+	// - 條目 ID 格式：'zh/my-entry' 或 'ja/my-entry'
+	// - 路由會是 /wiki/zh/my-entry 或 /wiki/ja/my-entry
+	// - 如果日文版本不存在，訪問 /wiki/ja/my-entry 時會自動使用中文版本
+	//   （這個 fallback 邏輯在 getStaticPaths 中實現）
+	
+	const paths = [];
+	
+	// 建立一個 Map 來存儲每個 slug 的所有語言版本
+	const postsBySlug = new Map();
+	
+	for (const post of posts) {
+		// 從條目 ID 中提取語言代碼
+		// 例如：'zh/my-entry' -> lang: 'zh', slug: 'my-entry'
+		const [lang, ...slugParts] = post.id.split('/');
+		const slug = slugParts.join('/');
+		
+		// 驗證語言代碼是否有效
+		if (SUPPORTED_LANGUAGES.includes(lang as any)) {
+			if (!postsBySlug.has(slug)) {
+				postsBySlug.set(slug, {});
+			}
+			postsBySlug.get(slug)[lang] = post;
+		}
+	}
+	
+	// 為每個 slug 生成路由
+	// 邏輯：優先使用該語言的版本，如果不存在則使用中文版本
+	for (const [slug, langPosts] of postsBySlug) {
+		for (const lang of SUPPORTED_LANGUAGES) {
+			// 如果該語言有條目，使用該條目
+			// 否則 fallback 到中文
+			const post = langPosts[lang] || langPosts['zh'];
+			
+			if (post) {
+				paths.push({
+					params: { slug: `${lang}/${slug}` }, // URL 參數：/wiki/zh/my-entry 或 /wiki/ja/my-entry
+					props: post, // 傳遞給組件的 Props
+				});
+			}
+		}
+	}
+	
+	return paths;
+}
+
+/** Wiki 條目的類型定義 */
+type Props = CollectionEntry<'wiki'>;
+
+/** 
+ * 獲取當前條目數據
+ * Astro 會根據 URL 自動傳遞正確的條目
+ */
+const post = Astro.props;
+
+/** 渲染條目內容為 HTML */
+const { Content } = await render(post);
+---
+
+{/* 使用 WikiPost 佈局顯示條目 */}
+<WikiPost {...post.data}>
+	{/* 條目內容 */}
+	<Content />
+</WikiPost>

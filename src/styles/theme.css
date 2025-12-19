@@ -1,0 +1,279 @@
+/* ============================================================================
+   主題 CSS 變數 (theme.css)
+   
+   用途：
+   - 定義亮色和深色模式的所有顏色變數
+   - 支援深色模式切換
+   - 提供統一的顏色管理
+   ============================================================================ */
+
+/* ============================================================================
+   亮色模式 - 預設主題
+   ============================================================================ */
+
+:root {
+  /* 
+     背景顏色
+     
+     說明：
+     - --bg-primary: 主要背景色（頁面背景）
+     - --bg-secondary: 次要背景色（卡片、容器）
+     - --bg-tertiary: 第三級背景色（懸停、焦點）
+  */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f7fa;
+  --bg-tertiary: #ecf0f1;
+
+  /* 
+     文字顏色
+     
+     說明：
+     - --text-primary: 主要文字色（標題、正文）
+     - --text-secondary: 次要文字色（副標題、說明）
+     - --text-tertiary: 第三級文字色（提示、禁用）
+  */
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --text-tertiary: #95a5a6;
+
+  /* 
+     邊框顏色
+     
+     說明：
+     - --border-light: 淺邊框色
+     - --border-dark: 深邊框色
+  */
+  --border-light: #ecf0f1;
+  --border-dark: #bdc3c7;
+
+  /* 
+     強調色
+     
+     說明：
+     - --accent: 主要強調色（連結、按鈕）
+     - --accent-light: 淺強調色（懸停、焦點）
+     - --accent-dark: 深強調色（按下、活躍）
+  */
+  --accent: #3498db;
+  --accent-light: #5dade2;
+  --accent-dark: #2980b9;
+
+  /* 
+     狀態顏色
+     
+     說明：
+     - --success: 成功色（綠色）
+     - --warning: 警告色（黃色）
+     - --error: 錯誤色（紅色）
+     - --info: 信息色（藍色）
+  */
+  --success: #27ae60;
+  --warning: #f39c12;
+  --error: #e74c3c;
+  --info: #3498db;
+
+  /* 
+     陰影
+     
+     說明：
+     - --shadow-sm: 小陰影
+     - --shadow-md: 中陰影
+     - --shadow-lg: 大陰影
+  */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================================
+   深色模式 - 替代主題
+   ============================================================================ */
+
+[data-theme="dark"] {
+  /* 
+     背景顏色 - 深色模式
+     
+     說明：
+     - 反轉亮色模式的背景顏色
+     - 使用深灰色和黑色
+  */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #3d3d3d;
+
+  /* 
+     文字顏色 - 深色模式
+     
+     說明：
+     - 反轉亮色模式的文字顏色
+     - 使用白色和淺灰色
+  */
+  --text-primary: #f0f0f0;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #808080;
+
+  /* 
+     邊框顏色 - 深色模式
+     
+     說明：
+     - 反轉亮色模式的邊框顏色
+     - 使用深灰色
+  */
+  --border-light: #3d3d3d;
+  --border-dark: #555555;
+
+  /* 
+     強調色 - 深色模式
+     
+     說明：
+     - 調整強調色以適應深色背景
+     - 使用更亮的藍色
+  */
+  --accent: #5dade2;
+  --accent-light: #85c1e9;
+  --accent-dark: #2980b9;
+
+  /* 
+     狀態顏色 - 深色模式
+     
+     說明：
+     - 調整狀態顏色以適應深色背景
+     - 使用更亮的顏色
+  */
+  --success: #52be80;
+  --warning: #f8b739;
+  --error: #ec7063;
+  --info: #5dade2;
+
+  /* 
+     陰影 - 深色模式
+     
+     說明：
+     - 調整陰影以適應深色背景
+     - 使用更深的陰影
+  */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================================
+   應用主題變數到全局元素
+   ============================================================================ */
+
+/* 
+   HTML 根元素
+   
+   說明：
+   - 設定背景顏色和文字顏色
+   - 應用主題變數
+*/
+html {
+  /* 背景顏色：主要背景色 */
+  background-color: var(--bg-primary);
+  /* 文字顏色：主要文字色 */
+  color: var(--text-primary);
+  /* 平滑過渡 */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 
+   Body 元素
+   
+   說明：
+   - 繼承 HTML 的背景和文字顏色
+*/
+body {
+  /* 背景顏色：主要背景色 */
+  background-color: var(--bg-primary);
+  /* 文字顏色：主要文字色 */
+  color: var(--text-primary);
+}
+
+/* 
+   連結
+   
+   說明：
+   - 使用強調色
+   - 懸停時使用淺強調色
+*/
+a {
+  /* 文字顏色：強調色 */
+  color: var(--accent);
+  /* 平滑過渡 */
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  /* 文字顏色：淺強調色 */
+  color: var(--accent-light);
+}
+
+/* 
+   按鈕
+   
+   說明：
+   - 使用強調色背景
+   - 白色文字
+   - 懸停時使用深強調色
+*/
+button {
+  /* 背景顏色：強調色 */
+  background-color: var(--accent);
+  /* 文字顏色：白色 */
+  color: white;
+  /* 邊框：無 */
+  border: none;
+  /* 平滑過渡 */
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  /* 背景顏色：深強調色 */
+  background-color: var(--accent-dark);
+}
+
+/* 
+   輸入框
+   
+   說明：
+   - 使用次要背景色
+   - 邊框使用淺邊框色
+   - 焦點時使用強調色邊框
+*/
+input,
+textarea,
+select {
+  /* 背景顏色：次要背景色 */
+  background-color: var(--bg-secondary);
+  /* 文字顏色：主要文字色 */
+  color: var(--text-primary);
+  /* 邊框：1px 淺邊框色 */
+  border: 1px solid var(--border-light);
+  /* 平滑過渡 */
+  transition: border-color 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  /* 移除預設外框 */
+  outline: none;
+  /* 邊框顏色：強調色 */
+  border-color: var(--accent);
+}
+
+/* 
+   代碼塊
+   
+   說明：
+   - 使用第三級背景色
+   - 使用次要文字色
+*/
+code,
+pre {
+  /* 背景顏色：第三級背景色 */
+  background-color: var(--bg-tertiary);
+  /* 文字顏色：次要文字色 */
+  color: var(--text-secondary);
+}

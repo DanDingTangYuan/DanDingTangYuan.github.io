@@ -1,0 +1,215 @@
+/* ============================================================================
+   Wiki 首頁樣式 (wiki/index.css)
+   
+   用途：
+   - 控制 Wiki 設定集/百科條目列表的佈局和樣式
+   - 響應式設計
+   ============================================================================ */
+
+/* 
+   主容器
+   
+   說明：
+   - 寬度固定 960px
+*/
+main {
+  /* 寬度固定 960px */
+  width: 960px;
+}
+
+/* 
+   文章列表容器
+   
+   說明：
+   - 使用 flex 佈局，兩欄排列
+   - gap: 2rem 文章之間的距離
+   - list-style-type: none 移除列表符號
+*/
+ul {
+  /* 使用 flex 佈局 */
+  display: flex;
+  /* 自動換行 */
+  flex-wrap: wrap;
+  /* 文章之間的距離 */
+  gap: 2rem;
+  /* 移除列表符號 */
+  list-style-type: none;
+  /* 移除預設邊距 */
+  margin: 0;
+  padding: 0;
+}
+
+/* 
+   文章列表項目
+   
+   說明：
+   - 寬度 50%（兩欄排列）
+   - calc(50% - 1rem) 考慮 gap 的寬度
+*/
+ul li {
+  /* 寬度：50% - gap 的一半 */
+  width: calc(50% - 1rem);
+}
+
+/* 
+   文章列表項目內的所有元素
+   
+   說明：
+   - 移除連結底線
+   - 平滑過渡動畫
+*/
+ul li * {
+  /* 移除連結底線 */
+  text-decoration: none;
+  /* 平滑過渡動畫 */
+  transition: 0.2s ease;
+}
+
+/* 
+   第一個文章（置頂文章）
+   
+   說明：
+   - 寬度 100%（佔滿整行）
+   - 文字居中
+   - 下方邊距 1rem
+*/
+ul li:first-child {
+  /* 寬度：100% */
+  width: 100%;
+  /* 下方邊距 */
+  margin-bottom: 1rem;
+  /* 文字居中 */
+  text-align: center;
+}
+
+/* 
+   第一個文章的圖片
+   
+   說明：
+   - 寬度 100%（填滿容器）
+*/
+ul li:first-child img {
+  /* 寬度：100% */
+  width: 100%;
+}
+
+/* 
+   第一個文章的標題
+   
+   說明：
+   - 字體大小 2.369rem（較大）
+*/
+ul li:first-child .title {
+  /* 字體大小：2.369rem */
+  font-size: 2.369rem;
+}
+
+/* 
+   文章圖片
+   
+   說明：
+   - 下方邊距 0.5rem
+   - 圓角 12px
+*/
+ul li img {
+  /* 下方邊距 */
+  margin-bottom: 0.5rem;
+  /* 圓角半徑 */
+  border-radius: 12px;
+}
+
+/* 
+   文章連結
+   
+   說明：
+   - display: block 讓連結填滿容器
+*/
+ul li a {
+  /* 顯示為區塊元素 */
+  display: block;
+}
+
+/* 
+   文章標題
+   
+   說明：
+   - 邊距：0
+   - 文字顏色：黑色（CSS 變數）
+   - 行高：1（緊湊）
+*/
+.title {
+  /* 邊距：0 */
+  margin: 0;
+  /* 文字顏色：黑色（CSS 變數） */
+  color: rgb(var(--black));
+  /* 行高：1 */
+  line-height: 1;
+}
+
+/* 
+   發布日期
+   
+   說明：
+   - 邊距：0
+   - 文字顏色：灰色（CSS 變數）
+*/
+.date {
+  /* 邊距：0 */
+  margin: 0;
+  /* 文字顏色：灰色（CSS 變數） */
+  color: rgb(var(--gray));
+}
+
+/* 
+   文章連結懸停效果 - 標題和日期
+   
+   說明：
+   - 文字顏色變成強調色（CSS 變數）
+*/
+ul li a:hover h4,
+ul li a:hover .date {
+  /* 文字顏色：強調色（CSS 變數） */
+  color: rgb(var(--accent));
+}
+
+/* 
+   文章連結懸停效果 - 圖片
+   
+   說明：
+   - 添加陰影效果
+*/
+ul a:hover img {
+  /* 陰影效果（CSS 變數） */
+  box-shadow: var(--box-shadow);
+}
+
+/* 
+   響應式設計 - 小螢幕
+   
+   說明：
+   - 當螢幕寬度小於 720px 時
+   - 改為單欄排列
+   - 調整字體大小
+*/
+@media (max-width: 720px) {
+  /* 減少文章之間的距離 */
+  ul {
+    gap: 0.5em;
+  }
+
+  /* 文章寬度改為 100%（單欄） */
+  ul li {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* 第一個文章的下方邊距改為 0 */
+  ul li:first-child {
+    margin-bottom: 0;
+  }
+
+  /* 第一個文章的標題字體大小改為 1.563em */
+  ul li:first-child .title {
+    font-size: 1.563em;
+  }
+}

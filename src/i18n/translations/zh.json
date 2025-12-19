@@ -1,0 +1,23 @@
+{
+  "nav": {
+    "home": "首頁",
+    "blog": "部落格",
+    "devlog": "開發日誌",
+    "story": "故事",
+    "wiki": "設定集"
+  },
+  "footer": {
+    "language": "語言",
+    "copyright": "© 2024 All rights reserved."
+  },
+  "theme": {
+    "light": "亮色模式",
+    "dark": "深色模式"
+  },
+  "common": {
+    "readMore": "閱讀更多",
+    "viewAll": "查看全部",
+    "lastUpdated": "最後更新於",
+    "publishedOn": "發布於"
+  }
+}

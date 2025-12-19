@@ -1,0 +1,92 @@
+---
+/**
+ * Story 首頁 - 多語言版本 (story/[lang]/index.astro)
+ * 
+ * 用途：
+ * - 顯示特定語言的 Story 小說/故事連載列表
+ * - 按發布日期降序排列
+ * - 提供故事預覽和連結
+ * 
+ * 路由：/story/[lang]
+ * 
+ * 例如：
+ * - /story/zh - 顯示中文故事
+ * - /story/ja - 顯示日文故事（如果沒有日文版本則顯示中文）
+ */
+
+import { getCollection } from "astro:content";
+import BaseHead from "../../../components/BaseHead.astro";
+import Footer from "../../../components/Footer.astro";
+import FormattedDate from "../../../components/FormattedDate.astro";
+import Header from "../../../components/Header.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../../../consts";
+import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE } from "../../../i18n/config";
+import "../index.css";
+
+/**
+ * 生成靜態路徑
+ * 為每個支援的語言生成一個路由
+ */
+export async function getStaticPaths() {
+	return SUPPORTED_LANGUAGES.map((lang) => ({
+		params: { lang },
+	}));
+}
+
+/** 取得當前語言 */
+const { lang } = Astro.params;
+
+/** 
+ * 獲取所有 Story 文章並按發布日期排序
+ * 最新的文章在最前面
+ * 
+ * 說明：
+ * - 文章 ID 格式：'zh/post-id' 或 'ja/post-id'
+ * - 包含所有語言的文章
+ */
+const allPosts = (await getCollection("story")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+/**
+ * 篩選當前語言的文章
+ * 
+ * 邏輯：
+ * - 如果文章是該語言的版本，顯示該文章
+ * - 如果文章是中文版本且當前語言沒有該文章，也顯示中文版本（fallback）
+ */
+const posts = allPosts.filter((post) => {
+	const [postLang] = post.id.split('/');
+	// 顯示該語言的文章，或中文的 fallback
+	return postLang === lang || (postLang === DEFAULT_LANGUAGE && lang !== DEFAULT_LANGUAGE);
+});
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section>
+        <ul>
+          {
+            posts.map((post) => (
+              <li>
+                <a href={`/story/${post.id}`}>
+                  <h4 class="title">{post.data.title}</h4>
+                  <p class="date">
+                    <FormattedDate date={post.data.pubDate} />
+                  </p>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

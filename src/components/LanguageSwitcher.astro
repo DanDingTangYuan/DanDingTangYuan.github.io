@@ -1,0 +1,204 @@
+---
+/**
+ * 語言切換組件 (LanguageSwitcher.astro)
+ * 
+ * 用途：
+ * - 提供語言切換選單
+ * - 放在 Footer
+ * - 顯示所有支援的語言
+ * - 點擊切換語言
+ */
+
+import { SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from '../i18n/config';
+import { extractLanguageFromPath } from '../i18n/utils';
+
+// 取得當前語言
+const currentPath = Astro.url.pathname;
+const currentLang = extractLanguageFromPath(currentPath);
+---
+
+<div class="language-switcher">
+  {/* 語言切換標籤 */}
+  <label for="language-select" class="language-label">
+    語言 / Language:
+  </label>
+
+  {/* 語言選擇下拉選單 */}
+  <select
+    id="language-select"
+    class="language-select"
+    value={currentLang}
+    onchange="handleLanguageChange(this.value)"
+  >
+    {SUPPORTED_LANGUAGES.map((lang) => (
+      <option value={lang} selected={lang === currentLang}>
+        {LANGUAGE_NAMES[lang]}
+      </option>
+    ))}
+  </select>
+</div>
+
+<style>
+  /* 
+     語言切換容器
+     
+     說明：
+     - 放在 Footer
+     - 使用 flex 佈局
+     - 水平排列
+  */
+  .language-switcher {
+    /* 使用 flex 佈局 */
+    display: flex;
+    /* 水平排列 */
+    flex-direction: row;
+    /* 垂直居中 */
+    align-items: center;
+    /* 水平居中 */
+    justify-content: center;
+    /* 間距 */
+    gap: 0.5rem;
+  }
+
+  /* 
+     語言切換標籤
+     
+     說明：
+     - 文字顏色：灰色
+     - 字體大小：0.95rem
+  */
+  .language-label {
+    /* 文字顏色：灰色 */
+    color: rgb(var(--gray));
+    /* 字體大小：0.95rem */
+    font-size: 0.95rem;
+    /* 游標為指標 */
+    cursor: pointer;
+  }
+
+  /* 
+     語言選擇下拉選單
+     
+     說明：
+     - 背景透明
+     - 邊框：1px 灰色
+     - 圓角：4px
+     - 內邊距：0.5rem
+     - 游標為指標
+  */
+  .language-select {
+    /* 背景顏色：白色 */
+    background: white;
+    /* 邊框：1px 灰色 */
+    border: 1px solid rgb(var(--gray-light));
+    /* 圓角：4px */
+    border-radius: 4px;
+    /* 內邊距 */
+    padding: 0.5rem 0.75rem;
+    /* 文字顏色：深灰色 */
+    color: rgb(var(--gray-dark));
+    /* 字體大小：0.95rem */
+    font-size: 0.95rem;
+    /* 游標為指標 */
+    cursor: pointer;
+    /* 平滑過渡 */
+    transition: all 0.3s ease;
+  }
+
+  /* 
+     語言選擇下拉選單 - 懸停效果
+     
+     說明：
+     - 邊框顏色變成強調色
+  */
+  .language-select:hover {
+    /* 邊框顏色：強調色 */
+    border-color: rgb(var(--accent));
+  }
+
+  /* 
+     語言選擇下拉選單 - 焦點效果
+     
+     說明：
+     - 邊框顏色變成強調色
+     - 外框陰影
+  */
+  .language-select:focus {
+    /* 移除預設外框 */
+    outline: none;
+    /* 邊框顏色：強調色 */
+    border-color: rgb(var(--accent));
+    /* 外框陰影 */
+    box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.1);
+  }
+
+  /* 
+     深色模式 - 語言選擇下拉選單
+     
+     說明：
+     - 背景顏色：深灰色
+     - 文字顏色：白色
+  */
+  [data-theme="dark"] .language-select {
+    /* 背景顏色：深灰色 */
+    background: rgb(var(--gray-dark));
+    /* 文字顏色：白色 */
+    color: white;
+    /* 邊框顏色：淺灰色 */
+    border-color: rgb(var(--gray-light));
+  }
+</style>
+
+<script>
+  /**
+   * 語言切換邏輯
+   * 
+   * 說明：
+   * - 監聽下拉選單變化
+   * - 根據選擇的語言重新導向到對應的 URL
+   * - 支援多種路徑格式：
+   *   - /blog/zh/post-1 -> /blog/ja/post-1
+   *   - /blog -> /blog
+   *   - / -> /
+   */
+
+  /**
+   * 處理語言變化
+   * 
+   * @param selectedLang - 選擇的語言代碼
+   */
+  function handleLanguageChange(selectedLang: string) {
+    // 取得當前 URL 路徑
+    const currentPath = window.location.pathname;
+
+    // 分割路徑
+    const segments = currentPath.split('/').filter(Boolean);
+
+    // 如果路徑為空（首頁），直接返回首頁
+    if (segments.length === 0) {
+      window.location.href = '/';
+      return;
+    }
+
+    // 檢查第二個位置是否是語言代碼
+    // 路徑格式：/collection/lang/slug 或 /collection/lang
+    const supportedLangs = ['zh', 'ja'];
+    
+    if (segments.length >= 2 && supportedLangs.includes(segments[1])) {
+      // 替換語言代碼（在第二個位置）
+      segments[1] = selectedLang;
+    } else if (segments.length >= 1) {
+      // 如果第二個位置不是語言代碼，在第一個位置後插入語言代碼
+      segments.splice(1, 0, selectedLang);
+    }
+
+    // 生成新的 URL
+    const newPath = '/' + segments.join('/');
+
+    // 重新導向
+    window.location.href = newPath;
+  }
+
+  // 將函數暴露到全局作用域，以便 HTML 中的 onchange 事件可以調用
+  (window as any).handleLanguageChange = handleLanguageChange;
+</script>

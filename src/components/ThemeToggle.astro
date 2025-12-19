@@ -1,0 +1,259 @@
+---
+/**
+ * 主題切換組件 (ThemeToggle.astro)
+ * 
+ * 用途：
+ * - 提供深色/亮色模式切換按鈕
+ * - 放在 Header 最右邊
+ * - 顯示太陽/月亮圖示
+ * - 儲存使用者選擇到 localStorage
+ */
+---
+
+<div class="theme-toggle">
+  {/* 太陽圖示 - 亮色模式 */}
+  <button
+    id="theme-toggle-btn"
+    class="theme-toggle-btn"
+    aria-label="切換深色/亮色模式"
+    title="切換主題"
+  >
+    {/* 太陽圖示 */}
+    <svg
+      class="sun-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+
+    {/* 月亮圖示 */}
+    <svg
+      class="moon-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+  </button>
+</div>
+
+<style>
+  /* 
+     主題切換容器
+     
+     說明：
+     - 放在 Header 最右邊
+     - 使用 flex 佈局
+  */
+  .theme-toggle {
+    /* 使用 flex 佈局 */
+    display: flex;
+    /* 垂直居中 */
+    align-items: center;
+    /* 水平居中 */
+    justify-content: center;
+  }
+
+  /* 
+     主題切換按鈕
+     
+     說明：
+     - 圓形按鈕
+     - 背景透明
+     - 邊框無
+     - 游標為指標
+  */
+  .theme-toggle-btn {
+    /* 寬度和高度 */
+    width: 40px;
+    height: 40px;
+    /* 背景透明 */
+    background: transparent;
+    /* 邊框無 */
+    border: none;
+    /* 游標為指標 */
+    cursor: pointer;
+    /* 圓形按鈕 */
+    border-radius: 50%;
+    /* 文字顏色繼承 */
+    color: inherit;
+    /* 平滑過渡 */
+    transition: all 0.3s ease;
+    /* 顯示為 flex 容器 */
+    display: flex;
+    /* 垂直居中 */
+    align-items: center;
+    /* 水平居中 */
+    justify-content: center;
+  }
+
+  /* 
+     主題切換按鈕 - 懸停效果
+     
+     說明：
+     - 背景變成半透明
+     - 縮放效果
+  */
+  .theme-toggle-btn:hover {
+    /* 背景顏色：半透明灰色 */
+    background: rgba(0, 0, 0, 0.1);
+    /* 縮放效果 */
+    transform: scale(1.1);
+  }
+
+  /* 
+     主題切換按鈕 - 深色模式懸停效果
+     
+     說明：
+     - 深色模式下背景變成半透明白色
+  */
+  [data-theme="dark"] .theme-toggle-btn:hover {
+    /* 背景顏色：半透明白色 */
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* 
+     太陽圖示
+     
+     說明：
+     - 寬度和高度 24px
+     - 亮色模式顯示
+     - 深色模式隱藏
+  */
+  .sun-icon {
+    /* 寬度和高度 */
+    width: 24px;
+    height: 24px;
+    /* 亮色模式顯示 */
+    display: block;
+  }
+
+  /* 
+     月亮圖示
+     
+     說明：
+     - 寬度和高度 24px
+     - 亮色模式隱藏
+     - 深色模式顯示
+  */
+  .moon-icon {
+    /* 寬度和高度 */
+    width: 24px;
+    height: 24px;
+    /* 亮色模式隱藏 */
+    display: none;
+  }
+
+  /* 
+     深色模式 - 圖示切換
+     
+     說明：
+     - 深色模式下隱藏太陽圖示
+     - 深色模式下顯示月亮圖示
+  */
+  [data-theme="dark"] .sun-icon {
+    /* 隱藏太陽圖示 */
+    display: none;
+  }
+
+  [data-theme="dark"] .moon-icon {
+    /* 顯示月亮圖示 */
+    display: block;
+  }
+</style>
+
+<script>
+  /**
+   * 主題切換邏輯
+   * 
+   * 說明：
+   * - 檢測系統偏好設定
+   * - 讀取 localStorage 中的使用者選擇
+   * - 應用主題到 HTML 根元素
+   * - 監聽按鈕點擊事件
+   */
+
+  // 取得主題切換按鈕
+  const themeToggleBtn = document.getElementById('theme-toggle-btn');
+
+  /**
+   * 初始化主題
+   * 
+   * 優先級：
+   * 1. localStorage 中的使用者選擇
+   * 2. 系統偏好設定
+   * 3. 預設為亮色模式
+   */
+  function initializeTheme() {
+    // 取得 localStorage 中的主題設定
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme) {
+      // 如果有儲存的主題設定，使用它
+      applyTheme(savedTheme);
+    } else {
+      // 否則檢測系統偏好設定
+      const prefersDark = window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
+      const theme = prefersDark ? 'dark' : 'light';
+      applyTheme(theme);
+    }
+  }
+
+  /**
+   * 應用主題
+   * 
+   * @param theme - 主題名稱（'light' 或 'dark'）
+   */
+  function applyTheme(theme: string) {
+    // 設定 HTML 根元素的 data-theme 屬性
+    document.documentElement.setAttribute('data-theme', theme);
+    // 儲存主題選擇到 localStorage
+    localStorage.setItem('theme', theme);
+  }
+
+  /**
+   * 切換主題
+   */
+  function toggleTheme() {
+    // 取得當前主題
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    // 切換主題
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    // 應用新主題
+    applyTheme(newTheme);
+  }
+
+  // 初始化主題
+  initializeTheme();
+
+  // 監聽按鈕點擊事件
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', toggleTheme);
+  }
+
+  // 監聽系統主題變化
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', (e) => {
+      // 如果使用者沒有手動設定主題，則跟隨系統設定
+      if (!localStorage.getItem('theme')) {
+        const theme = e.matches ? 'dark' : 'light';
+        applyTheme(theme);
+      }
+    });
+</script>

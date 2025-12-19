@@ -6,30 +6,73 @@
  * - 顯示單篇 DevLog 開發日誌的完整內容
  * - 動態生成所有 DevLog 文章的頁面
  * - 使用 DevlogPost 佈局提供統一的頁面風格
+ * - 支援多語言路由
  * 
- * 路由：/devlog/[文章-id]
+ * 路由：/devlog/[語言]/[文章-id]
  * 
  * 例如：
- * - /devlog/my-project-update
- * - /devlog/bug-fix-log
+ * - /devlog/zh/my-project-update
+ * - /devlog/ja/bug-fix-log
  */
 
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import DevlogPost from '../../layouts/DevlogPost.astro';
+import { SUPPORTED_LANGUAGES } from '../../i18n/config';
 
 /**
  * 生成靜態路徑
- * Astro 會為每篇 DevLog 文章生成一個靜態頁面
+ * Astro 會為每篇 DevLog 文章的每個語言版本生成一個靜態頁面
  */
 export async function getStaticPaths() {
 	// 獲取所有 DevLog 文章
 	const posts = await getCollection('devlog');
 	
-	// 為每篇文章生成一個路由
-	return posts.map((post) => ({
-		params: { slug: post.id }, // URL 參數
-		props: post, // 傳遞給組件的 Props
-	}));
+	// 為每篇文章生成路由
+	// 說明：
+	// - 每個文章只生成一個路由
+	// - 文章 ID 格式：'zh/my-post' 或 'ja/my-post'
+	// - 路由會是 /devlog/zh/my-post 或 /devlog/ja/my-post
+	// - 如果日文版本不存在，訪問 /devlog/ja/my-post 時會自動使用中文版本
+	//   （這個 fallback 邏輯在 getStaticPaths 中實現）
+	
+	const paths = [];
+	
+	// 建立一個 Map 來存儲每個 slug 的所有語言版本
+	const postsBySlug = new Map();
+	
+	for (const post of posts) {
+		// 從文章 ID 中提取語言代碼
+		// 例如：'zh/my-post' -> lang: 'zh', slug: 'my-post'
+		const [lang, ...slugParts] = post.id.split('/');
+		const slug = slugParts.join('/');
+		
+		// 驗證語言代碼是否有效
+		if (SUPPORTED_LANGUAGES.includes(lang as any)) {
+			if (!postsBySlug.has(slug)) {
+				postsBySlug.set(slug, {});
+			}
+			postsBySlug.get(slug)[lang] = post;
+		}
+	}
+	
+	// 為每個 slug 生成路由
+	// 邏輯：優先使用該語言的版本，如果不存在則使用中文版本
+	for (const [slug, langPosts] of postsBySlug) {
+		for (const lang of SUPPORTED_LANGUAGES) {
+			// 如果該語言有文章，使用該文章
+			// 否則 fallback 到中文
+			const post = langPosts[lang] || langPosts['zh'];
+			
+			if (post) {
+				paths.push({
+					params: { slug: `${lang}/${slug}` }, // URL 參數：/devlog/zh/my-post 或 /devlog/ja/my-post
+					props: post, // 傳遞給組件的 Props
+				});
+			}
+		}
+	}
+	
+	return paths;
 }
 
 /** DevLog 文章的類型定義 */

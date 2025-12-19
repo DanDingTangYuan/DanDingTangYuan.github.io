@@ -74,6 +74,32 @@ const regularPosts = allPosts
 
 /** 最終顯示的文章列表（置頂在前，普通在後） */
 const displayPosts = [...pinnedPosts, ...regularPosts];
+
+/* ============================================================================
+   Tag 統計與排序
+   ============================================================================ */
+
+/** 
+ * 統計所有文章中每個 tag 的使用次數
+ * 用於後續按使用頻率排序 tag
+ */
+const tagFrequency: Record<string, number> = {};
+displayPosts.forEach(post => {
+  if (post.data.tags) {
+    post.data.tags.forEach(tag => {
+      tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+    });
+  }
+});
+
+/** 
+ * 按使用次數排序 tag
+ * 使用次數多的 tag 排在前面
+ * 例如：['React', 'JavaScript', 'Web', 'CSS', ...]
+ */
+const sortedTags = Object.entries(tagFrequency)
+  .sort((a, b) => (b[1] as number) - (a[1] as number))
+  .map(entry => entry[0]);
 ---
 
 <!doctype html>
@@ -144,9 +170,18 @@ const displayPosts = [...pinnedPosts, ...regularPosts];
                     
                     {post.data.tags && post.data.tags.length > 0 && (
                       <div class="card-tags">
-                        {post.data.tags.slice(0, 3).map((tag) => (
-                          <span class="tag">{tag}</span>
-                        ))}
+                        {/* 
+                          Tag 顯示邏輯：
+                          1. 按全站 tag 使用頻率排序（使用次數多的排在前）
+                          2. 只顯示前 3 個最常用的 tag
+                          3. 如果文章少於 3 個 tag，就全部顯示
+                        */}
+                        {post.data.tags
+                          .sort((a, b) => sortedTags.indexOf(a) - sortedTags.indexOf(b))
+                          .slice(0, 3)
+                          .map((tag) => (
+                            <span class="tag">{tag}</span>
+                          ))}
                       </div>
                     )}
                   </div>
@@ -184,32 +219,34 @@ const displayPosts = [...pinnedPosts, ...regularPosts];
           <aside class="sidebar">
             {/* 頭像 */}
             <div class="sidebar-avatar">
-              <img src="https://via.placeholder.com/150" alt="個人頭像" />
+              <img src="https://hackmd.io/_uploads/Bk3Z1Uzm-e.png" alt="個人頭像" />
             </div>
 
             {/* 名稱 */}
-            <h3 class="sidebar-name">Your Name</h3>
-
+            <a href="about.astro" style = "text-decoration: none;">
+              <h3 class="sidebar-name">言葉</h3>
+            </a>
             {/* 簡介 */}
             <p class="sidebar-bio">
-              這是你的個人簡介。你可以在這裡介紹自己、分享你的興趣和專業領域。
+              我是言葉，一個不專業的小說家兼繪師兼碼農。<br><br>
+              是個一是處的天才。大概吧...
             </p>
 
             {/* 社群連結 */}
             <div class="sidebar-links">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" title="GitHub">
+              <a href="https://github.com/DanDingTangYuan" target="_blank" rel="noopener noreferrer" title="GitHub">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                 </svg>
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter">
+              <a href="https://x.com/kaichou_73" target="_blank" rel="noopener noreferrer" title="Twitter">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7"/>
                 </svg>
               </a>
               <a href="mailto:your.email@example.com" title="Email">
                 <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
                   <polyline points="22,6 12,13 2,6" fill="none" stroke="currentColor" stroke-width="2"/>
                 </svg>
               </a>
@@ -229,22 +266,35 @@ const displayPosts = [...pinnedPosts, ...regularPosts];
 </html>
 
 <script>
-  // 1. 抓取 Header 和 Hero 元素
+  /**
+   * 頁面滾動事件處理
+   * 
+   * 功能：
+   * 1. Header 顯示/隱藏和顏色變化
+   * 2. Hero 卡片點擊事件
+   */
+
+  // ============================================================================
+  // 元素選擇
+  // ============================================================================
+
   const header = document.querySelector("header");
   const hero = document.querySelector(".hero");
+  const heroCard = document.querySelector(".hero-card");
 
-  // 2. 記錄「上一次」的滾動位置，預設為 0
+  // ============================================================================
+  // Header 滾動控制
+  // ============================================================================
+
   let lastScrollY = window.scrollY;
 
-  // 確保元素都存在才執行
   if (header && hero) {
     window.addEventListener("scroll", () => {
       const currentScrollY = window.scrollY;
       // @ts-ignore
-      const heroHeight = hero.offsetHeight; // 抓取 Hero 區塊的高度
+      const heroHeight = hero.offsetHeight;
 
-      // --- 邏輯 1：控制顯示/隱藏 (依據方向) ---
-      // 只有當滾動超過一點點 (50px) 後才開始做收合動作，避免在頂部微調時一直閃
+      // --- Header 顯示/隱藏 (依據滾動方向) ---
       if (currentScrollY > lastScrollY && currentScrollY > 50) {
         // 向下滾 -> 隱藏
         header.classList.add("nav-hidden");
@@ -253,13 +303,12 @@ const displayPosts = [...pinnedPosts, ...regularPosts];
         header.classList.remove("nav-hidden");
       }
 
-      // --- 邏輯 2：控制顏色/透明度 (依據位置) ---
-      // 如果滾動距離 超過 Hero 的高度 (減去一點緩衝，例如 Header 自身高度，視覺比較順)
+      // --- Header 顏色/透明度 (依據位置) ---
       if (currentScrollY > heroHeight - 80) {
         // 離開 Hero -> 變成實色
         header.classList.add("nav-solid");
       } else {
-        // 還在 Hero 內 -> 移除實色 (變回 CSS 預設的半透明)
+        // 還在 Hero 內 -> 移除實色
         header.classList.remove("nav-solid");
       }
 
@@ -268,8 +317,10 @@ const displayPosts = [...pinnedPosts, ...regularPosts];
     });
   }
 
+  // ============================================================================
   // Hero 卡片點擊事件 - 平滑滾動到內容區域
-  const heroCard = document.querySelector(".hero-card");
+  // ============================================================================
+
   if (heroCard) {
     heroCard.addEventListener("click", () => {
       const targetElement = document.querySelector("#hero-content-start");

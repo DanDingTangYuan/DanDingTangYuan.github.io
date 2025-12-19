@@ -491,11 +491,26 @@ header.nav-solid {
    沒有圖片的文章右側會顯示空白
 */
 
-/* 圖片樣式 */
+/* 
+   圖片樣式
+   
+   說明：
+   - width: 100% 填滿容器寬度
+   - height: 100% 填滿容器高度
+   - object-fit: cover 保持寬高比，不拉伸，超出部分裁切
+   - object-position: center 從中心裁切
+   - transition: transform 0.3s ease 平滑過渡動畫
+*/
 .card-image img {
+    /* 寬度：填滿容器 */
     width: 100%;
+    /* 高度：填滿容器 */
     height: 100%;
-    object-fit: cover; /* 保持寬高比，填滿容器 */
+    /* 保持寬高比，不拉伸，超出部分裁切 */
+    object-fit: cover;
+    /* 從中心裁切 */
+    object-position: center;
+    /* 平滑過渡動畫 */
     transition: transform 0.3s ease;
 }
 
@@ -612,6 +627,11 @@ header.nav-solid {
     text-decoration: none; /* 移除連結底線 */
     display: inline-block; /* 讓連結可以有 padding 和 border-radius */
 }
+
+.read-more:hover {
+    color: #c3cfe2;
+}
+
 
 /* 懸停時改變背景色 */
 .update-card:hover .read-more {
@@ -788,15 +808,18 @@ html {
    
    說明：
    - 寬高 100% 填滿容器
-   - object-fit: cover 保持寬高比，填滿容器
+   - object-fit: cover 保持寬高比，不拉伸，超出部分裁切
+   - object-position: center 從中心裁切
 */
 .sidebar-avatar img {
     /* 寬度：填滿容器 */
     width: 100%;
     /* 高度：填滿容器 */
     height: 100%;
-    /* 保持寬高比，填滿容器 */
+    /* 保持寬高比，不拉伸，超出部分裁切 */
     object-fit: cover;
+    /* 從中心裁切 */
+    object-position: center;
 }
 
 /* 

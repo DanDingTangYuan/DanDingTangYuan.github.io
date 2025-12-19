@@ -1,0 +1,23 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "blog": "ブログ",
+    "devlog": "開発ログ",
+    "story": "ストーリー",
+    "wiki": "ウィキ"
+  },
+  "footer": {
+    "language": "言語",
+    "copyright": "© 2024 All rights reserved."
+  },
+  "theme": {
+    "light": "ライトモード",
+    "dark": "ダークモード"
+  },
+  "common": {
+    "readMore": "もっと読む",
+    "viewAll": "すべて表示",
+    "lastUpdated": "最後に更新",
+    "publishedOn": "公開日"
+  }
+}

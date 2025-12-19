@@ -1,0 +1,585 @@
+/* ============================================================================
+   DevLog 首頁樣式 (devlog/index.css)
+   
+   用途：
+   - 控制 DevLog 開發日誌列表的佈局和樣式
+   - 使用卡片網格佈局
+   - 顯示專案狀態和技術標籤
+   - 響應式設計
+   ============================================================================ */
+
+/* 
+   主容器
+   
+   說明：
+   - 使用 flex 佈局，垂直排列
+   - padding: 4rem 2rem 上下左右邊距
+   - 背景漸層色
+*/
+main {
+  /* 使用 flex 佈局 */
+  display: flex;
+  /* 垂直排列 */
+  flex-direction: column;
+  /* 上下左右邊距 */
+  padding: 4rem 2rem;
+  /* 背景漸層色 */
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  /* 最小高度：填滿視窗 */
+  min-height: 100vh;
+}
+
+/* 
+   頁面標題區域
+   
+   說明：
+   - 文字居中
+   - 下方邊距 3rem
+*/
+.page-header {
+  /* 文字居中 */
+  text-align: center;
+  /* 下方邊距 */
+  margin-bottom: 3rem;
+}
+
+/* 
+   頁面標題
+   
+   說明：
+   - 字體大小 2.5rem
+   - 深色文字
+   - 字重 700（粗體）
+*/
+.page-header h1 {
+  /* 字體大小：2.5rem */
+  font-size: 2.5rem;
+  /* 下方邊距 */
+  margin-bottom: 1rem;
+  /* 文字顏色：深灰色 */
+  color: #2c3e50;
+  /* 字重：700（粗體） */
+  font-weight: 700;
+}
+
+/* 
+   頁面副標題
+   
+   說明：
+   - 字體大小 1.1rem
+   - 灰色文字
+*/
+.page-header p {
+  /* 字體大小：1.1rem */
+  font-size: 1.1rem;
+  /* 文字顏色：灰色 */
+  color: #7f8c8d;
+  /* 邊距：0 */
+  margin: 0;
+}
+
+/* 
+   卡片容器
+   
+   說明：
+   - 使用 flex 佈局，垂直排列
+   - 最大寬度 900px，居中
+   - 左右自動邊距
+*/
+.cards-container {
+  /* 使用 flex 佈局 */
+  display: flex;
+  /* 垂直排列 */
+  flex-direction: column;
+  /* 最大寬度 900px */
+  max-width: 900px;
+  /* 左右自動邊距，讓容器居中 */
+  margin: 0 auto;
+  /* 寬度填滿父容器 */
+  width: 100%;
+}
+
+/* 
+   卡片網格
+   
+   說明：
+   - 使用 flex 佈局，垂直排列卡片
+   - gap: 1.5rem 卡片之間的距離
+*/
+.cards-grid {
+  /* 使用 flex 佈局 */
+  display: flex;
+  /* 垂直排列卡片 */
+  flex-direction: column;
+  /* 卡片之間的距離 */
+  gap: 1.5rem;
+}
+
+/* 
+   DevLog 卡片 - 主容器
+   
+   說明：
+   - 背景白色，圓角 20px
+   - 使用 flex 佈局，水平排列（內容在左，圖片在右）
+   - 高度固定 300px
+   - 陰影效果
+*/
+.devlog-card {
+  /* 背景顏色：白色 */
+  background: white;
+  /* 圓角半徑：20px */
+  border-radius: 20px;
+  /* 隱藏超出邊界的內容，確保圖片圓角貼邊 */
+  overflow: hidden;
+  /* 陰影效果：4px 模糊，20px 擴散，黑色 10% 透明度 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  
+  /* 使用 flex 佈局 */
+  display: flex;
+  /* 水平排列（內容在左，圖片在右） */
+  flex-direction: row;
+  /* 垂直居中對齐 */
+  align-items: stretch;
+  
+  /* 寬度：填滿父容器 */
+  width: 100%;
+  /* 內邊距：無 */
+  padding: 0;
+  /* 高度：固定 300px，圖片會根據此高度調整寬度 */
+  height: 300px;
+  
+  /* 平滑過渡動畫 */
+  transition: all 0.3s ease;
+}
+
+/* 
+   卡片懸停效果
+   
+   說明：
+   - 向上移動 8px
+   - 增加陰影
+*/
+.devlog-card:hover {
+  /* 向上移動 8px */
+  transform: translateY(-8px);
+  /* 增加陰影 */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* 
+   卡片連結容器
+   
+   說明：
+   - 使用 flex 佈局，水平排列
+   - 填滿卡片寬度
+*/
+.card-link {
+  /* 使用 flex 佈局 */
+  display: flex;
+  /* 寬度：填滿卡片 */
+  width: 100%;
+  /* 垂直居中對齐 */
+  align-items: stretch;
+}
+
+/* 
+   卡片內容區域 - 左側
+   
+   說明：
+   - flex: 1 填滿剩餘空間
+   - 使用 flex 佈局，垂直排列
+   - justify-content: space-between 讓內容分散到上中下
+*/
+.card-content {
+  /* 填滿剩餘空間 */
+  flex: 1;
+  /* 使用 flex 佈局 */
+  display: flex;
+  /* 垂直排列 */
+  flex-direction: column;
+  /* 內邊距 */
+  padding: 1.5rem;
+  /* 內容分散到上中下 */
+  justify-content: space-between;
+  /* 高度填滿卡片 */
+  height: 100%;
+}
+
+/* 
+   卡片標題
+   
+   說明：
+   - 字體大小 1.25rem
+   - 字重 600（半粗體）
+   - 限制為 2 行，超出部分用省略號表示
+*/
+.card-title {
+  /* 字體大小：1.25rem */
+  font-size: 1.25rem;
+  /* 字重：600（半粗體） */
+  font-weight: 600;
+  /* 下方邊距 */
+  margin-bottom: 0.75rem;
+  /* 文字顏色：深灰色 */
+  color: #2c3e50;
+  /* 行高 */
+  line-height: 1.4;
+  
+  /* 文字截斷 - 2 行 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 
+   卡片描述
+   
+   說明：
+   - 字體大小 0.95rem
+   - 灰色文字
+   - 限制為 3 行，超出部分用省略號表示
+*/
+.card-description {
+  /* 文字顏色：灰色 */
+  color: #7f8c8d;
+  /* 行高 */
+  line-height: 1.6;
+  /* 下方邊距 */
+  margin-bottom: 1rem;
+  
+  /* 文字截斷 - 3 行 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 
+   專案狀態和版本信息容器
+   
+   說明：
+   - 使用 flex 佈局，水平排列
+   - flex-wrap: wrap 自動換行
+   - gap: 0.5rem 元素之間的距離
+*/
+.card-meta-info {
+  /* 使用 flex 佈局 */
+  display: flex;
+  /* 自動換行 */
+  flex-wrap: wrap;
+  /* 元素之間的距離 */
+  gap: 0.5rem;
+  /* 下方邊距 */
+  margin-bottom: 1rem;
+}
+
+/* 
+   專案狀態徽章 - 基礎樣式
+   
+   說明：
+   - 內邊距 0.25rem 0.5rem
+   - 圓角 4px
+   - 字體大小 0.875rem
+   - 字重 bold
+*/
+.status-badge {
+  /* 內邊距 */
+  padding: 0.25rem 0.5rem;
+  /* 圓角半徑 */
+  border-radius: 4px;
+  /* 字體大小 */
+  font-size: 0.875rem;
+  /* 字重 */
+  font-weight: bold;
+}
+
+/* 
+   專案狀態 - 開發中（黃色）
+*/
+.status-development {
+  /* 背景顏色：淺黃色 */
+  background: #fef3c7;
+  /* 文字顏色：深黃色 */
+  color: #92400e;
+}
+
+/* 
+   專案狀態 - 維護中（藍色）
+*/
+.status-maintenance {
+  /* 背景顏色：淺藍色 */
+  background: #dbeafe;
+  /* 文字顏色：深藍色 */
+  color: #1e40af;
+}
+
+/* 
+   專案狀態 - 修理中（紅色）
+*/
+.status-fixing {
+  /* 背景顏色：淺紅色 */
+  background: #fecaca;
+  /* 文字顏色：深紅色 */
+  color: #dc2626;
+}
+
+/* 
+   專案狀態 - 已完成（綠色）
+*/
+.status-completed {
+  /* 背景顏色：淺綠色 */
+  background: #d1fae5;
+  /* 文字顏色：深綠色 */
+  color: #065f46;
+}
+
+/* 
+   專案狀態 - 已棄坑（灰色）
+*/
+.status-abandoned {
+  /* 背景顏色：淺灰色 */
+  background: #f3f4f6;
+  /* 文字顏色：深灰色 */
+  color: #6b7280;
+}
+
+/* 
+   版本號徽章
+   
+   說明：
+   - 背景淺灰色
+   - 文字灰色
+   - 圓角 4px
+*/
+.version-badge {
+  /* 背景顏色：淺灰色 */
+  background: #ecf0f1;
+  /* 文字顏色：深灰色 */
+  color: #34495e;
+  /* 內邊距 */
+  padding: 0.25rem 0.5rem;
+  /* 圓角半徑 */
+  border-radius: 4px;
+  /* 字體大小 */
+  font-size: 0.875rem;
+  /* 字重 */
+  font-weight: 500;
+}
+
+/* 
+   卡片標籤容器
+   
+   說明：
+   - 使用 flex 佈局，水平排列
+   - flex-wrap: wrap 自動換行
+   - gap: 0.5rem 標籤之間的距離
+*/
+.card-tags {
+  /* 使用 flex 佈局 */
+  display: flex;
+  /* 自動換行 */
+  flex-wrap: wrap;
+  /* 標籤之間的距離 */
+  gap: 0.5rem;
+  /* 下方邊距 */
+  margin-bottom: 1rem;
+}
+
+/* 
+   單個標籤
+   
+   說明：
+   - 背景淺灰色
+   - 文字灰色
+   - 圓角 12px
+*/
+.tag {
+  /* 背景顏色：淺灰色 */
+  background: #ecf0f1;
+  /* 文字顏色：深灰色 */
+  color: #34495e;
+  /* 內邊距 */
+  padding: 0.25rem 0.75rem;
+  /* 圓角半徑 */
+  border-radius: 12px;
+  /* 字體大小 */
+  font-size: 0.875rem;
+  /* 字重 */
+  font-weight: 500;
+}
+
+/* 
+   卡片底部 - 日期和閱讀按鈕
+   
+   說明：
+   - 使用 flex 佈局，水平排列
+   - justify-content: space-between 日期在左，按鈕在右
+*/
+.card-footer {
+  /* 使用 flex 佈局 */
+  display: flex;
+  /* 日期在左，按鈕在右 */
+  justify-content: space-between;
+  /* 垂直居中 */
+  align-items: center;
+  /* 上方邊距 */
+  margin-top: auto;
+  /* 上方邊距 */
+  padding-top: 1rem;
+  /* 間距 */
+  gap: 1rem;
+}
+
+/* 
+   卡片日期
+   
+   說明：
+   - 背景淺灰色
+   - 文字灰色
+   - 圓角 12px
+   - 防止換行
+*/
+.card-date {
+  /* 背景顏色：淺灰色 */
+  background: #ecf0f1;
+  /* 文字顏色：深灰色 */
+  color: #34495e;
+  /* 內邊距 */
+  padding: 0.25rem 0.75rem;
+  /* 圓角半徑 */
+  border-radius: 12px;
+  /* 字體大小 */
+  font-size: 0.875rem;
+  /* 字重 */
+  font-weight: 500;
+  /* 防止日期換行 */
+  white-space: nowrap;
+}
+
+/* 
+   閱讀更多按鈕
+   
+   說明：
+   - 背景藍色
+   - 文字白色
+   - 圓角 6px
+   - 防止換行
+*/
+.read-more {
+  /* 背景顏色：藍色 */
+  background: #3498db;
+  /* 文字顏色：白色 */
+  color: white;
+  /* 內邊距 */
+  padding: 0.5rem 1rem;
+  /* 圓角半徑 */
+  border-radius: 6px;
+  /* 字重 */
+  font-weight: 600;
+  /* 字體大小 */
+  font-size: 0.875rem;
+  /* 平滑過渡動畫 */
+  transition: all 0.3s ease;
+  /* 防止按鈕文字換行 */
+  white-space: nowrap;
+  /* 游標 */
+  cursor: pointer;
+  /* 移除連結底線 */
+  text-decoration: none;
+  /* 讓連結可以有 padding 和 border-radius */
+  display: inline-block;
+}
+
+/* 
+   閱讀更多按鈕 - 懸停效果
+   
+   說明：
+   - 背景變成深藍色
+*/
+.devlog-card:hover .read-more {
+  /* 背景顏色：深藍色 */
+  background: #2980b9;
+}
+
+/* 
+   卡片圖片區域 - 右側
+   
+   說明：
+   - 寬度動態計算：高度 × 5/7
+   - aspect-ratio: 5/7 會自動根據高度計算寬度
+   - 隱藏超出邊界的內容
+*/
+.card-image {
+  /* 寬度由 aspect-ratio 自動計算 */
+  width: auto;
+  /* 寬度 = 高度 × 5/7 */
+  aspect-ratio: 5 / 7;
+  /* 高度填滿卡片 */
+  height: 100%;
+  /* 隱藏超出邊界的內容 */
+  overflow: hidden;
+  /* 防止被壓縮 */
+  flex-shrink: 0;
+  /* 只有右側圓角 */
+  border-radius: 0 20px 20px 0;
+}
+
+/* 
+   圖片樣式
+   
+   說明：
+   - 寬高 100% 填滿容器
+   - object-fit: cover 保持寬高比，不拉伸，超出部分裁切
+   - object-position: center 從中心裁切
+*/
+.card-image img {
+  /* 寬度：填滿容器 */
+  width: 100%;
+  /* 高度：填滿容器 */
+  height: 100%;
+  /* 保持寬高比，不拉伸，超出部分裁切 */
+  object-fit: cover;
+  /* 從中心裁切 */
+  object-position: center;
+  /* 平滑過渡動畫 */
+  transition: transform 0.3s ease;
+}
+
+/* 
+   響應式設計 - 小螢幕
+   
+   說明：
+   - 當螢幕寬度小於 720px 時
+   - 卡片改為垂直排列（圖片在上，內容在下）
+   - 調整高度和邊距
+*/
+@media (max-width: 720px) {
+  /* 卡片改為垂直排列 */
+  .devlog-card {
+    /* 垂直排列 */
+    flex-direction: column;
+    /* 高度自動 */
+    height: auto;
+  }
+
+  /* 圖片區域調整 */
+  .card-image {
+    /* 寬度填滿 */
+    width: 100%;
+    /* 高度自動計算 */
+    height: auto;
+    /* 寬高比 */
+    aspect-ratio: 16 / 9;
+    /* 圓角調整 */
+    border-radius: 20px 20px 0 0;
+  }
+
+  /* 內容區域調整 */
+  .card-content {
+    /* 邊距調整 */
+    padding: 1rem;
+  }
+}

@@ -3,11 +3,18 @@
  * Story 首頁 (story/index.astro)
  * 
  * 用途：
- * - 顯示所有 Story 小說/故事連載的列表
+ * - 顯示所有 Story 小說/故事連載的卡片列表
  * - 按發布日期降序排列
  * - 提供故事預覽和連結
+ * - 支援多語言
  * 
  * 路由：/story
+ * 
+ * 說明：
+ * - 此頁面顯示所有語言的文章
+ * - 文章連結會帶上語言代碼（例如 /story/zh/post-id）
+ * - 使用卡片網格佈局，與首頁風格一致
+ * - 顯示系列名稱和章節號
  */
 
 import { getCollection } from "astro:content";
@@ -16,10 +23,15 @@ import Footer from "../../components/Footer.astro";
 import FormattedDate from "../../components/FormattedDate.astro";
 import Header from "../../components/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
+import "./index.css";
 
 /** 
  * 獲取所有 Story 文章並按發布日期排序
  * 最新的文章在最前面
+ * 
+ * 說明：
+ * - 文章 ID 格式：'zh/post-id' 或 'ja/post-id'
+ * - 包含所有語言的文章
  */
 const posts = (await getCollection("story")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -29,97 +41,75 @@ const posts = (await getCollection("story")).sort(
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    <style>
-      main {
-        width: 960px;
-      }
-      ul {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-      }
-      ul li {
-        width: calc(50% - 1rem);
-      }
-      ul li * {
-        text-decoration: none;
-        transition: 0.2s ease;
-      }
-      ul li:first-child {
-        width: 100%;
-        margin-bottom: 1rem;
-        text-align: center;
-      }
-      ul li:first-child img {
-        width: 100%;
-      }
-      ul li:first-child .title {
-        font-size: 2.369rem;
-      }
-      ul li img {
-        margin-bottom: 0.5rem;
-        border-radius: 12px;
-      }
-      ul li a {
-        display: block;
-      }
-      .title {
-        margin: 0;
-        color: rgb(var(--black));
-        line-height: 1;
-      }
-      .date {
-        margin: 0;
-        color: rgb(var(--gray));
-      }
-      ul li a:hover h4,
-      ul li a:hover .date {
-        color: rgb(var(--accent));
-      }
-      ul a:hover img {
-        box-shadow: var(--box-shadow);
-      }
-      @media (max-width: 720px) {
-        ul {
-          gap: 0.5em;
-        }
-        ul li {
-          width: 100%;
-          text-align: center;
-        }
-        ul li:first-child {
-          margin-bottom: 0;
-        }
-        ul li:first-child .title {
-          font-size: 1.563em;
-        }
-      }
-    </style>
+    <BaseHead title={`${SITE_TITLE} - Story`} description={SITE_DESCRIPTION} />
   </head>
   <body>
+    {/* 頁面導航欄 */}
     <Header />
+    
     <main>
-      <section>
-        <ul>
+      {/* 頁面標題區域 */}
+      <section class="page-header">
+        <h1>Story</h1>
+        <p>創意寫作和故事連載</p>
+      </section>
+
+      {/* 故事卡片網格 */}
+      <section class="cards-container">
+        <div class="cards-grid">
           {
             posts.map((post) => (
-              <li>
-                <a href={`/story/${post.id}`}>
-                  <h4 class="title">{post.data.title}</h4>
-                  <p class="date">
-                    <FormattedDate date={post.data.pubDate} />
-                  </p>
+              <article class="story-card">
+                {/* 卡片連結容器 */}
+                <a href={`/story/${post.id}`} class="card-link">
+                  {/* 卡片內容區域 */}
+                  <div class="card-content">
+                    {/* 系列名稱和章節號 */}
+                    <div class="card-series-info">
+                      {post.data.series && (
+                        <span class="series-name">{post.data.series}</span>
+                      )}
+                      {post.data.chapter && (
+                        <span class="chapter-number">第 {post.data.chapter} 章</span>
+                      )}
+                    </div>
+
+                    {/* 文章標題 */}
+                    <h3 class="card-title">{post.data.title}</h3>
+                    
+                    {/* 故事標籤 */}
+                    {post.data.tags && post.data.tags.length > 0 && (
+                      <div class="card-tags">
+                        {post.data.tags.slice(0, 3).map((tag) => (
+                          <span class="tag">{tag}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 卡片底部 - 日期和閱讀按鈕 */}
+                  <div class="card-footer">
+                    <span class="card-date">
+                      <FormattedDate date={post.data.pubDate} />
+                    </span>
+                    <span class="read-more">閱讀更多 →</span>
+                  </div>
                 </a>
-              </li>
+
+                {/* 卡片圖片區域（如果有封面圖） */}
+                {post.data.coverImage && (
+                  <div class="card-image">
+                    <img src={post.data.coverImage} alt={post.data.title} />
+                  </div>
+                )}
+              </article>
             ))
           }
-        </ul>
+        </div>
       </section>
     </main>
+    
+    {/* 頁面頁腳 */}
     <Footer />
   </body>
 </html>
