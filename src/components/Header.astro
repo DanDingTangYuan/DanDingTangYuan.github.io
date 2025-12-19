@@ -1,18 +1,39 @@
 ---
+/**
+ * Header 組件
+ * 
+ * 用途：
+ * - 顯示網站導航欄
+ * - 包含網站標題/Logo
+ * - 提供主要導航連結（DevLog、Blog、Story、Wiki）
+ * - 顯示社交媒體連結
+ * 
+ * 特性：
+ * - 固定在頁面頂部（通過 CSS 的 position: fixed）
+ * - 響應式設計（手機上隱藏社交連結）
+ * - 自動檢測當前頁面並標記活躍連結
+ */
+
 import { SITE_TITLE } from "../consts";
 import HeaderLink from "./HeaderLink.astro";
 ---
 
 <header>
   <nav>
+    {/* 網站標題/Logo - 點擊返回首頁 */}
     <h2><a href="/">{SITE_TITLE}</a></h2>
+    
+    {/* 主要導航連結 */}
     <div class="internal-links">
       <HeaderLink href="/devlog">DevLog</HeaderLink>
       <HeaderLink href="/blog">Blog</HeaderLink>
       <HeaderLink href="/story">Story</HeaderLink>
       <HeaderLink href="/wiki">Wiki</HeaderLink>
     </div>
+    
+    {/* 社交媒體連結 */}
     <div class="social-links">
+      {/* Mastodon 連結 */}
       <a href="https://m.webtoo.ls/@astro" target="_blank">
         <span class="sr-only">Follow Astro on Mastodon</span>
         <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32"
@@ -22,6 +43,8 @@ import HeaderLink from "./HeaderLink.astro";
           ></path></svg
         >
       </a>
+      
+      {/* Twitter 連結 */}
       <a href="https://twitter.com/astrodotbuild" target="_blank">
         <span class="sr-only">Follow Astro on Twitter</span>
         <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32"
@@ -35,40 +58,53 @@ import HeaderLink from "./HeaderLink.astro";
   </nav>
 </header>
 <style>
+  /** Header 容器 */
   header {
     margin: 0;
     padding: 0 1em;
-    /* background: white; */
     box-shadow: 0 2px 8px rgba(var(--black), 5%);
   }
+  
+  /** 標題樣式 */
   h2 {
     margin: 0;
     font-size: 1em;
   }
 
+  /** 標題連結 - 移除底線 */
   h2 a,
   h2 a.active {
     text-decoration: none;
   }
+  
+  /** 導航容器 - 使用 flexbox 排列 */
   nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
+  
+  /** 導航連結 - 添加下邊框指示器 */
   nav a {
     padding: 1em 0.5em;
     color: var(--black);
     border-bottom: 4px solid transparent;
     text-decoration: none;
   }
+  
+  /** 活躍導航連結 - 顯示下邊框 */
   nav a.active {
     text-decoration: none;
     border-bottom-color: var(--accent);
   }
+  
+  /** 社交連結容器 - 水平排列 */
   .social-links,
   .social-links a {
     display: flex;
   }
+  
+  /** 響應式設計 - 手機上隱藏社交連結 */
   @media (max-width: 720px) {
     .social-links {
       display: none;

@@ -1,35 +1,55 @@
 ---
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseHead /> component.
+/**
+ * BaseHead 組件
+ * 
+ * 用途：
+ * - 在所有頁面中注入全局 CSS
+ * - 設置 SEO 相關的 meta 標籤
+ * - 配置 Open Graph 和 Twitter Card
+ * - 設置字體預加載
+ * 
+ * 使用方式：
+ * <BaseHead title="頁面標題" description="頁面描述" />
+ */
+
 import "../styles/global.css";
 import type { ImageMetadata } from "astro";
 import { SITE_TITLE } from "../consts";
 
+/** 組件 Props 類型定義 */
 interface Props {
-  title: string;
-  description: string;
-  image?: ImageMetadata;
+  title: string; // 頁面標題
+  description: string; // 頁面描述
+  image?: ImageMetadata; // 頁面圖片（可選）
 }
 
+/** 生成規範 URL，用於 SEO */
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
+/** 從 Props 中解構標題和描述 */
 const { title, description } = Astro.props;
 ---
 
-<!-- Global Metadata -->
+{/* 全局元數據 - 字符編碼和視窗設置 */}
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+{/* 網站圖標和 Sitemap */}
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="sitemap" href="/sitemap-index.xml" />
+
+{/* RSS 訂閱連結 */}
 <link
   rel="alternate"
   type="application/rss+xml"
   title={SITE_TITLE}
   href={new URL("rss.xml", Astro.site)}
 />
+
+{/* Astro 生成器標籤 */}
 <meta name="generator" content={Astro.generator} />
 
-<!-- Font preloads -->
+{/* 字體預加載 - 提高頁面加載速度 */}
 <link
   rel="preload"
   href="/fonts/atkinson-regular.woff"
@@ -45,21 +65,21 @@ const { title, description } = Astro.props;
   crossorigin
 />
 
-<!-- Canonical URL -->
+{/* 規範 URL - 用於 SEO，告訴搜尋引擎這是主要版本 */}
 <link rel="canonical" href={canonicalURL} />
 
-<!-- Primary Meta Tags -->
+{/* 主要 Meta 標籤 - SEO 相關 */}
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
 
-<!-- Open Graph / Facebook -->
+{/* Open Graph Meta 標籤 - 用於 Facebook 和其他社交媒體分享 */}
 <meta property="og:type" content="website" />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 
-<!-- Twitter -->
+{/* Twitter Card Meta 標籤 - 用於 Twitter 分享 */}
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={title} />

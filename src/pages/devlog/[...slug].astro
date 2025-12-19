@@ -1,20 +1,52 @@
 ---
+/**
+ * DevLog 單篇文章頁面 (devlog/[...slug].astro)
+ * 
+ * 用途：
+ * - 顯示單篇 DevLog 開發日誌的完整內容
+ * - 動態生成所有 DevLog 文章的頁面
+ * - 使用 DevlogPost 佈局提供統一的頁面風格
+ * 
+ * 路由：/devlog/[文章-id]
+ * 
+ * 例如：
+ * - /devlog/my-project-update
+ * - /devlog/bug-fix-log
+ */
+
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import DevlogPost from '../../layouts/DevlogPost.astro';
 
+/**
+ * 生成靜態路徑
+ * Astro 會為每篇 DevLog 文章生成一個靜態頁面
+ */
 export async function getStaticPaths() {
+	// 獲取所有 DevLog 文章
 	const posts = await getCollection('devlog');
+	
+	// 為每篇文章生成一個路由
 	return posts.map((post) => ({
-		params: { slug: post.id },
-		props: post,
+		params: { slug: post.id }, // URL 參數
+		props: post, // 傳遞給組件的 Props
 	}));
 }
+
+/** DevLog 文章的類型定義 */
 type Props = CollectionEntry<'devlog'>;
 
+/** 
+ * 獲取當前文章數據
+ * Astro 會根據 URL 自動傳遞正確的文章
+ */
 const post = Astro.props;
+
+/** 渲染文章內容為 HTML */
 const { Content } = await render(post);
 ---
 
+{/* 使用 DevlogPost 佈局顯示文章 */}
 <DevlogPost {...post.data}>
+	{/* 文章內容 */}
 	<Content />
 </DevlogPost>

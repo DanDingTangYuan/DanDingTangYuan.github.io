@@ -1,4 +1,4 @@
-import { c as createComponent, r as renderComponent, a as renderTemplate } from '../../chunks/astro/server_P46heXja.mjs';
+import { c as createComponent, r as renderComponent, a as renderTemplate } from '../../chunks/astro/server_dQE2Ws6i.mjs';
 import 'piccolore';
 export { renderers } from '../../renderers.mjs';
 

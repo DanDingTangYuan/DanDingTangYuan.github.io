@@ -1,4 +1,18 @@
 ---
+/**
+ * BlogPost 佈局
+ * 
+ * 用途：
+ * - 為 Blog 文章提供統一的頁面佈局
+ * - 顯示文章標題、日期、更新時間
+ * - 提供文章內容的容器
+ * 
+ * 使用方式：
+ * <BlogPost {...post.data}>
+ *   <Content />
+ * </BlogPost>
+ */
+
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
@@ -6,8 +20,10 @@ import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
 
+/** Blog 文章的 frontmatter 類型 */
 type Props = CollectionEntry<"blog">["data"];
 
+/** 解構文章數據 */
 const { title, description, pubDate, updatedDate } = Astro.props;
 ---
 
@@ -56,13 +72,18 @@ const { title, description, pubDate, updatedDate } = Astro.props;
   </head>
 
   <body>
+    {/* 頁面導航欄 */}
     <Header />
+    
     <main>
       <article>
         <div class="prose">
+          {/* 文章標題區域 */}
           <div class="title">
+            {/* 發布日期 */}
             <div class="date">
               <FormattedDate date={pubDate} />
+              {/* 更新日期（如果存在） */}
               {
                 updatedDate && (
                   <div class="last-updated-on">
@@ -71,13 +92,19 @@ const { title, description, pubDate, updatedDate } = Astro.props;
                 )
               }
             </div>
+            
+            {/* 文章標題 */}
             <h1>{title}</h1>
             <hr />
           </div>
+          
+          {/* 文章內容 - 由父組件提供 */}
           <slot />
         </div>
       </article>
     </main>
+    
+    {/* 頁面頁腳 */}
     <Footer />
   </body>
 </html>

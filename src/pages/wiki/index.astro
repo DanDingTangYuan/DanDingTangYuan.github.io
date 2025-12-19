@@ -1,4 +1,15 @@
 ---
+/**
+ * Wiki 首頁 (wiki/index.astro)
+ * 
+ * 用途：
+ * - 顯示所有 Wiki 設定集/百科條目的列表
+ * - 按字母順序排列
+ * - 提供條目預覽和連結
+ * 
+ * 路由：/wiki
+ */
+
 import { getCollection } from "astro:content";
 import BaseHead from "../../components/BaseHead.astro";
 import Footer from "../../components/Footer.astro";
@@ -6,6 +17,9 @@ import FormattedDate from "../../components/FormattedDate.astro";
 import Header from "../../components/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 
+/** 
+ * 獲取所有 Wiki 條目並按字母順序排列
+ */
 const posts = (await getCollection("wiki")).sort();
 ---
 

@@ -1,26 +1,51 @@
 ---
+/**
+ * FormattedDate 組件
+ * 
+ * 用途：
+ * - 格式化和顯示日期
+ * - 處理多種日期輸入格式（Date 對象、字符串、undefined）
+ * - 提供 SEO 友好的 HTML time 標籤
+ * 
+ * 使用方式：
+ * <FormattedDate date={post.data.pubDate} />
+ */
+
+/** 組件 Props 類型定義 */
 interface Props {
-	date: Date | string | undefined;
+	date: Date | string | undefined; // 日期可以是 Date 對象、字符串或 undefined
 }
 
+/** 從 Props 中解構日期 */
 const { date } = Astro.props;
 
-// 確保 date 存在且是有效的 Date 對象
+/** 
+ * 日期處理邏輯
+ * 確保 date 始終是有效的 Date 對象
+ */
 let dateObj: Date;
 if (!date) {
+	// 如果沒有提供日期，使用當前日期
 	dateObj = new Date();
 } else if (date instanceof Date) {
+	// 如果已經是 Date 對象，直接使用
 	dateObj = date;
 } else {
+	// 如果是字符串，轉換為 Date 對象
 	dateObj = new Date(date);
 }
 
-// 檢查日期是否有效
+/** 檢查日期是否有效，無效則使用當前日期 */
 if (isNaN(dateObj.getTime())) {
 	dateObj = new Date();
 }
 ---
 
+{/* 
+  HTML time 標籤
+  - datetime 屬性用於 SEO 和機器可讀性
+  - 顯示文本使用美式英文格式 (e.g., "Dec 19, 2025")
+*/}
 <time datetime={dateObj.toISOString()}>
 	{
 		dateObj.toLocaleDateString('en-us', {

@@ -1,12 +1,26 @@
 ---
+/**
+ * Footer 組件
+ * 
+ * 用途：
+ * - 顯示網站頁腳
+ * - 顯示版權信息和當前年份
+ * - 顯示免責聲明
+ */
+
+/** 獲取當前年份用於版權信息 */
 const today = new Date();
 ---
 
+{/* 頁腳容器 */}
 <footer>
+  {/* 版權信息 - 自動更新年份 */}
   &copy; {today.getFullYear()} Maid by Kotonomi. All rights reserved.
   <br />
+  {/* 免責聲明 */}
   未經許可，禁止轉載本站之任何內容。
 </footer>
+
 <style>
   footer {
     padding: 2em 1em 6em 1em;

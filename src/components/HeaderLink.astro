@@ -1,22 +1,46 @@
 ---
+/**
+ * HeaderLink 組件
+ * 
+ * 用途：
+ * - 在導航欄中顯示連結
+ * - 自動檢測當前頁面並標記為活躍狀態
+ * - 提供一致的導航連結樣式
+ * 
+ * 使用方式：
+ * <HeaderLink href="/blog">Blog</HeaderLink>
+ */
+
 import type { HTMLAttributes } from 'astro/types';
 
+/** 組件 Props 類型定義 - 繼承 HTML a 標籤的所有屬性 */
 type Props = HTMLAttributes<'a'>;
 
+/** 解構 Props */
 const { href, class: className, ...props } = Astro.props;
+
+/** 獲取當前頁面路徑 */
 const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
+
+/** 提取路徑的第一個部分（用於判斷是否在該分類下） */
 const subpath = pathname.match(/[^\/]+/g);
+
+/** 判斷連結是否為活躍狀態 */
 const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 ---
 
+{/* 導航連結 - 根據 isActive 添加 active 類別 */}
 <a href={href} class:list={[className, { active: isActive }]} {...props}>
 	<slot />
 </a>
+
 <style>
 	a {
 		display: inline-block;
 		text-decoration: none;
 	}
+	
+	{/* 活躍連結樣式 - 加粗並添加下劃線 */}
 	a.active {
 		font-weight: bolder;
 		text-decoration: underline;

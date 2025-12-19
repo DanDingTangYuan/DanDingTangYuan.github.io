@@ -1,4 +1,15 @@
 ---
+/**
+ * DevLog 首頁 (devlog/index.astro)
+ * 
+ * 用途：
+ * - 顯示所有 DevLog 開發日誌的列表
+ * - 按發布日期降序排列
+ * - 提供開發日誌預覽和連結
+ * 
+ * 路由：/devlog
+ */
+
 import { getCollection } from "astro:content";
 import BaseHead from "../../components/BaseHead.astro";
 import Footer from "../../components/Footer.astro";
@@ -6,6 +17,10 @@ import FormattedDate from "../../components/FormattedDate.astro";
 import Header from "../../components/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 
+/** 
+ * 獲取所有 DevLog 文章並按發布日期排序
+ * 最新的文章在最前面
+ */
 const posts = (await getCollection("devlog")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
@@ -86,15 +101,21 @@ const posts = (await getCollection("devlog")).sort(
     </style>
   </head>
   <body>
+    {/* 頁面導航欄 */}
     <Header />
+    
     <main>
       <section>
+        {/* 開發日誌列表 */}
         <ul>
           {
             posts.map((post) => (
               <li>
+                {/* 開發日誌連結 */}
                 <a href={`/devlog/${post.id}`}>
+                  {/* 開發日誌標題 */}
                   <h4 class="title">{post.data.title}</h4>
+                  {/* 發布日期 */}
                   <p class="date">
                     <FormattedDate date={post.data.pubDate} />
                   </p>
@@ -105,6 +126,8 @@ const posts = (await getCollection("devlog")).sort(
         </ul>
       </section>
     </main>
+    
+    {/* 頁面頁腳 */}
     <Footer />
   </body>
 </html>

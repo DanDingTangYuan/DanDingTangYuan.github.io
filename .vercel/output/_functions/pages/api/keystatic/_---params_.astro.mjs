@@ -121,6 +121,7 @@ const config = config$1({
           defaultValue: "development"
         }),
         thumbnail: fields.text({ label: "縮圖網址 (Thumbnail URL)" }),
+        pinned: fields.checkbox({ label: "置頂文章", description: "勾選後將在首頁置頂顯示", defaultValue: false }),
         content: fields.markdoc({ label: "內文" })
       }
     }),
@@ -137,6 +138,7 @@ const config = config$1({
         tags: fields.array(fields.text({ label: "標籤" }), { label: "文章標籤 (Tags)", itemLabel: (props) => props.value }),
         thumbnail: fields.text({ label: "縮圖網址 (Thumbnail URL)" }),
         draft: fields.checkbox({ label: "草稿狀態", description: "勾選後將不會發布", defaultValue: false }),
+        pinned: fields.checkbox({ label: "置頂文章", description: "勾選後將在首頁置頂顯示", defaultValue: false }),
         content: fields.markdoc({ label: "內文" })
       }
     }),
@@ -162,6 +164,7 @@ const config = config$1({
         }),
         tags: fields.array(fields.text({ label: "Tag" }), { label: "標籤" }),
         coverImage: fields.text({ label: "封面網址 (Cover URL)" }),
+        pinned: fields.checkbox({ label: "置頂文章", description: "勾選後將在首頁置頂顯示", defaultValue: false }),
         content: fields.markdoc({ label: "內文" })
       }
     }),

@@ -1,22 +1,47 @@
 ---
+/**
+ * BaseLayout 佈局
+ * 
+ * 用途：
+ * - 提供基礎的頁面佈局結構
+ * - 包含 Header、Footer 和主要內容區域
+ * - 設置 SEO meta 標籤
+ * 
+ * 使用方式：
+ * <BaseLayout title="頁面標題" description="頁面描述">
+ *   頁面內容
+ * </BaseLayout>
+ */
+
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 
+/** 
+ * Props 解構
+ * 如果沒有提供 title 和 description，使用默認值
+ */
 const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
+    {/* SEO 和 meta 標籤 */}
     <BaseHead title={title} description={description} />
   </head>
   <body>
+    {/* 頁面導航欄 */}
     <Header />
+    
+    {/* 主要內容區域 */}
     <main>
+      {/* 由父組件提供的內容 */}
       <slot />
     </main>
+    
+    {/* 頁面頁腳 */}
     <Footer />
   </body>
 </html>

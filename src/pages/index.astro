@@ -1,18 +1,79 @@
 ---
+/**
+ * 首頁 (index.astro)
+ * 
+ * 用途：
+ * - 顯示網站首頁
+ * - 展示 Hero 區域和動畫效果
+ * - 顯示最近更新的文章卡片
+ * - 支持文章置頂功能
+ * 
+ * 功能：
+ * - 從所有內容集合中獲取文章
+ * - 按發布日期排序
+ * - 分離置頂和普通文章
+ * - 限制顯示數量（最多 12 篇）
+ */
+
 import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import FormattedDate from "../components/FormattedDate.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import { getCollection } from "astro:content";
 import "../styles/index.css";
 
-// 1. 引入優化工具 和 您的圖片
+// 圖片優化
 import { getImage } from "astro:assets";
-import myBackground from "../assets/hero_background.jpg"; // 請確認這裡的路徑正確
+import myBackground from "../assets/hero_background.jpg";
 
+/** 優化背景圖片為 WebP 格式以提高加載速度 */
 const optimizedBackground = await getImage({
   src: myBackground,
-  format: "webp", // 強制轉成 WebP 讓載入變快
+  format: "webp",
 });
+
+// ============================================================================
+// 內容獲取和處理
+// ============================================================================
+
+/** 從各個內容集合中獲取文章 */
+const blogPosts = await getCollection("blog");
+const devlogPosts = await getCollection("devlog");
+const storyPosts = await getCollection("story");
+
+/** 
+ * 合併所有內容並添加類型標記
+ * 這樣可以在模板中區分不同類型的文章
+ */
+const allPosts = [
+  ...blogPosts.map(post => ({ ...post, type: "blog" as const, url: `/blog/${post.id}` })),
+  ...devlogPosts.map(post => ({ ...post, type: "devlog" as const, url: `/devlog/${post.id}` })),
+  ...storyPosts.map(post => ({ ...post, type: "story" as const, url: `/story/${post.id}` }))
+];
+
+/** 
+ * 分離置頂文章
+ * 置頂文章會顯示在最前面
+ * 最多顯示 2 篇置頂文章
+ */
+const pinnedPosts = allPosts
+  .filter(post => post.data.pinned === true)
+  .sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf())
+  .slice(0, 2);
+
+/** 
+ * 普通文章
+ * 按發布日期降序排列（最新的在前）
+ * 數量 = 12 - 置頂文章數量
+ */
+const regularPosts = allPosts
+  .filter(post => post.data.pinned !== true)
+  .sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf())
+  .slice(0, 12 - pinnedPosts.length);
+
+/** 最終顯示的文章列表（置頂在前，普通在後） */
+const displayPosts = [...pinnedPosts, ...regularPosts];
 ---
 
 <!doctype html>
@@ -48,8 +109,77 @@ const optimizedBackground = await getImage({
       </section>
 
       <div class="dummy-content" id="hero-content-start">
-        <h2>這裡是未來的精彩內容</h2>
-        <p>向下滾動來測試導覽列效果...</p>
+        <h2 class="section-title">最近更新</h2>
+        <p class="section-subtitle">探索最新的文章、開發日誌和故事</p>
+        
+        <div class="cards-grid">
+          {displayPosts.map((post) => (
+            <article class={`update-card ${post.data.pinned ? 'pinned-card' : ''}`}>
+              {/* 卡片容器 - 不再是連結，只有按鈕是連結 */}
+              <div class="card-link">
+                {/* 內容區域 - 左側彈性寬度 */}
+                <div class="card-main-content">
+                  <div class="card-header">
+                    <span class={`card-type card-type-${post.type}`}>
+                      {post.type === 'blog' ? 'Blog' : 
+                       post.type === 'devlog' ? 'DevLog' : 'Story'}
+                    </span>
+                    {post.data.pinned && (
+                      <span class="pinned-badge">📌 置頂</span>
+                    )}
+                  </div>
+                  
+                  <div class="card-content">
+                    <h3 class="card-title">{post.data.title}</h3>
+                    <p class="card-description">
+                      {post.type === 'story' 
+                        ? `${'series' in post.data ? post.data.series : ''} - 第 ${'chapter' in post.data ? post.data.chapter : ''} 章`
+                        : ('description' in post.data ? post.data.description : '暫無描述')
+                      }
+                    </p>
+                    
+                    {post.data.tags && post.data.tags.length > 0 && (
+                      <div class="card-tags">
+                        {post.data.tags.slice(0, 3).map((tag) => (
+                          <span class="tag">{tag}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div class="card-meta">
+                    {/* 日期 - 灰色標籤樣式 */}
+                    <span class="card-date">
+                      <FormattedDate date={post.data.pubDate} />
+                    </span>
+                    {/* 閱讀更多按鈕 - 唯一的可點擊元素 */}
+                    <a href={post.url} class="read-more">閱讀更多 →</a>
+                  </div>
+                </div>
+                
+                {/* 圖片區域 - 右側動態寬度 */}
+                {(() => {
+                  const thumbnail = 'thumbnail' in post.data ? post.data.thumbnail : undefined;
+                  const coverImage = 'coverImage' in post.data ? post.data.coverImage : undefined;
+                  const imageUrl = thumbnail || coverImage;
+                  
+                  /* 如果有圖片就顯示，沒有就不顯示任何東西 */
+                  return imageUrl ? (
+                    <div class="card-image">
+                      <img src={imageUrl} alt={post.data.title} />
+                    </div>
+                  ) : null;
+                })()}
+              </div>
+            </article>
+          ))}
+        </div>
+        
+        <div class="view-all-links">
+          <a href="/blog" class="view-all-btn">查看所有 Blog</a>
+          <a href="/devlog" class="view-all-btn">查看所有 DevLog</a>
+          <a href="/story" class="view-all-btn">查看所有 Story</a>
+        </div>
       </div>
     </main>
     <Footer />
@@ -95,6 +225,8 @@ const optimizedBackground = await getImage({
       lastScrollY = currentScrollY;
     });
   }
+
+
 </script>
 
 <style>

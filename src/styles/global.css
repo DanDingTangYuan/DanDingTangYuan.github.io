@@ -1,14 +1,26 @@
-/*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
+/**
+ * 全局樣式 (global.css)
+ * 
+ * 用途：
+ * - 定義全局 CSS 變數（顏色、陰影等）
+ * - 設置基礎元素樣式（body、h1-h6、a、p 等）
+ * - 定義字體和排版規則
+ * 
+ * 基於 Bear Blog 的默認 CSS
+ * https://github.com/HermanMartinus/bearblog
+ * License MIT
  */
 
+/* ============================================================================
+   CSS 變數定義
+   ============================================================================ */
+
 :root {
+	/* 顏色變數 */
 	--accent: #2337ff;           /* 強調色（連結、引用邊框），亮藍色 */
 	--accent-dark: #000d8a;      /* 強調色的深色版本 */
-	--black: 15, 18, 25;         /* 黑色（RGB數值，非Hex，方便用於 rgba） */
-	--gray: 96, 115, 159;        /* 灰色（RGB數值） */
+	--black: 15, 18, 25;         /* 黑色（RGB 數值，方便用於 rgba） */
+	--gray: 96, 115, 159;        /* 灰色（RGB 數值） */
 	--gray-light: 229, 233, 240; /* 淺灰色（用於程式碼背景、分隔線） */
 	--gray-dark: 34, 41, 57;     /* 深灰色（主要文字顏色） */
 
@@ -17,20 +29,29 @@
 
 	/* 陰影效果：多層次陰影，製造立體感 */
 	--box-shadow:
-		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%), 0 16px 32px
-		rgba(var(--gray), 33%);
+		0 2px 6px rgba(var(--gray), 25%), 
+		0 8px 24px rgba(var(--gray), 33%), 
+		0 16px 32px rgba(var(--gray), 33%);
 }
+/* ============================================================================
+   HTML 和字體設定
+   ============================================================================ */
+
+/** 平滑滾動行為 - 錨點跳轉時使用滑動效果 */
 html {
-    /* 關鍵：讓所有錨點跳轉都變成滑動 */
     scroll-behavior: smooth;
 }
+
+/** 常規字體 - Atkinson Regular */
 @font-face {
 	font-family: "Atkinson";
 	src: url("/fonts/atkinson-regular.woff") format("woff");
 	font-weight: 400;
 	font-style: normal;
-	font-display: swap;
+	font-display: swap; /* 使用 swap 策略，優先顯示備用字體 */
 }
+
+/** 粗體字體 - Atkinson Bold */
 @font-face {
 	font-family: "Atkinson";
 	src: url("/fonts/atkinson-bold.woff") format("woff");
@@ -38,6 +59,15 @@ html {
 	font-style: normal;
 	font-display: swap;
 }
+
+/* ============================================================================
+   Body 和基礎排版
+   ============================================================================ */
+
+/** 
+ * Body 樣式
+ * 設置全局字體、顏色、背景
+ */
 body {
 	font-family: "Atkinson", sans-serif;
 	margin: 0;
@@ -51,12 +81,17 @@ body {
 	font-size: 20px;
 	line-height: 1.7;
 }
+/** Main 容器 - 文章內容區域 */
 main {
 	width: 720px;
-	/* max-width: calc(100% - 2em);
-	margin: auto; */
 	padding: 3em 1em;
 }
+
+/* ============================================================================
+   標題樣式 (h1-h6)
+   ============================================================================ */
+
+/** 標題基礎樣式 */
 h1,
 h2,
 h3,
@@ -67,83 +102,152 @@ h6 {
 	color: rgb(var(--black));
 	line-height: 1.2;
 }
+
+/** 一級標題 */
 h1 {
 	font-size: 3.052em;
 }
+
+/** 二級標題 */
 h2 {
 	font-size: 2.441em;
 }
+
+/** 三級標題 */
 h3 {
 	font-size: 1.953em;
 }
+
+/** 四級標題 */
 h4 {
 	font-size: 1.563em;
 }
+
+/** 五級標題 */
 h5 {
 	font-size: 1.25em;
 }
+
+/* ============================================================================
+   文字樣式
+   ============================================================================ */
+
+/** 粗體文字 */
 strong,
 b {
 	font-weight: 700;
 }
+
+/** 連結樣式 */
 a {
 	color: var(--accent);
 }
+
+/** 連結懸停效果 */
 a:hover {
 	color: var(--accent);
 }
+
+/** 段落間距 */
 p {
 	margin-bottom: 1em;
 }
+
+/** 文章內容段落 - 更大的間距 */
 .prose p {
 	margin-bottom: 2em;
 }
+/* ============================================================================
+   表單元素
+   ============================================================================ */
+
+/** 文本區域 - 全寬 */
 textarea {
 	width: 100%;
 	font-size: 16px;
 }
+
+/** 輸入框 - 確保字體大小 */
 input {
 	font-size: 16px;
 }
+
+/* ============================================================================
+   表格和圖片
+   ============================================================================ */
+
+/** 表格 - 全寬 */
 table {
 	width: 100%;
 }
+
+/** 圖片 - 響應式，帶圓角 */
 img {
 	max-width: 100%;
 	height: auto;
 	border-radius: 8px;
 }
+
+/* ============================================================================
+   代碼和引用
+   ============================================================================ */
+
+/** 行內代碼 */
 code {
 	padding: 2px 5px;
 	background-color: rgb(var(--gray-light));
 	border-radius: 2px;
 }
+
+/** 代碼塊 */
 pre {
 	padding: 1.5em;
 	border-radius: 8px;
 }
+
+/** 代碼塊內的代碼 - 移除行內代碼樣式 */
 pre > code {
 	all: unset;
 }
+
+/** 引用塊 - 左邊框 + 縮進 */
 blockquote {
 	border-left: 4px solid var(--accent);
 	padding: 0 0 0 20px;
 	margin: 0;
 	font-size: 1.333em;
 }
+
+/** 分隔線 */
 hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
 }
+
+/* ============================================================================
+   響應式設計
+   ============================================================================ */
+
 @media (max-width: 720px) {
+	/** 手機上縮小字體 */
 	body {
 		font-size: 18px;
 	}
+	
+	/** 手機上減少 main 內邊距 */
 	main {
 		padding: 1em;
 	}
 }
 
+/* ============================================================================
+   無障礙設計
+   ============================================================================ */
+
+/** 
+ * 屏幕閱讀器專用類別
+ * 用於隱藏視覺上不需要的元素，但保留給屏幕閱讀器
+ */
 .sr-only {
 	border: 0;
 	padding: 0;
@@ -152,12 +256,8 @@ hr {
 	height: 1px;
 	width: 1px;
 	overflow: hidden;
-	/* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
 	clip: rect(1px 1px 1px 1px);
-	/* maybe deprecated but we need to support legacy browsers */
 	clip: rect(1px, 1px, 1px, 1px);
-	/* modern browsers, clip-path works inwards from each corner */
 	clip-path: inset(50%);
-	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
 	white-space: nowrap;
 }
