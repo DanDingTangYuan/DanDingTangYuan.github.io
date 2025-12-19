@@ -18,7 +18,14 @@ export default config({
             format: { contentField: 'content' },    // 啟用 Markdown 編輯器
             schema: {
                 languages: fields.array(
-                    fields.checkbox(),
+                    fields.select({
+                        label: '語言',
+                        options: [
+                            { label: '中文 (Chinese)', value: 'zh' },
+                            { label: '日本語 (Japanese)', value: 'ja' },
+                        ],
+                        defaultValue: 'zh',
+                    }),
                     {
                         label: '語言 (Languages)',
                         itemLabel: (props) => {
@@ -28,7 +35,6 @@ export default config({
                             };
                             return labels[props.value] || props.value;
                         },
-                        defaultValue: ['zh'],
                     }
                 ),
                 title: fields.slug({ name: { label: '標題' } }),
@@ -62,7 +68,14 @@ export default config({
             format: { contentField: 'content' },
             schema: {
                 languages: fields.array(
-                    fields.checkbox(),
+                    fields.select({
+                        label: '語言',
+                        options: [
+                            { label: '中文 (Chinese)', value: 'zh' },
+                            { label: '日本語 (Japanese)', value: 'ja' },
+                        ],
+                        defaultValue: 'zh',
+                    }),
                     {
                         label: '語言 (Languages)',
                         itemLabel: (props) => {
@@ -72,7 +85,6 @@ export default config({
                             };
                             return labels[props.value] || props.value;
                         },
-                        defaultValue: ['zh'],
                     }
                 ),
                 title: fields.slug({ name: { label: '標題' } }),
@@ -94,7 +106,14 @@ export default config({
             format: { contentField: 'content' },
             schema: {
                 languages: fields.array(
-                    fields.checkbox(),
+                    fields.select({
+                        label: '語言',
+                        options: [
+                            { label: '中文 (Chinese)', value: 'zh' },
+                            { label: '日本語 (Japanese)', value: 'ja' },
+                        ],
+                        defaultValue: 'zh',
+                    }),
                     {
                         label: '語言 (Languages)',
                         itemLabel: (props) => {
@@ -104,7 +123,6 @@ export default config({
                             };
                             return labels[props.value] || props.value;
                         },
-                        defaultValue: ['zh'],
                     }
                 ),
                 title: fields.slug({ name: { label: '章節標題 (Title)' } }),
@@ -136,7 +154,14 @@ export default config({
             format: { contentField: 'content' },
             schema: {
                 languages: fields.array(
-                    fields.checkbox(),
+                    fields.select({
+                        label: '語言',
+                        options: [
+                            { label: '中文 (Chinese)', value: 'zh' },
+                            { label: '日本語 (Japanese)', value: 'ja' },
+                        ],
+                        defaultValue: 'zh',
+                    }),
                     {
                         label: '語言 (Languages)',
                         itemLabel: (props) => {
@@ -146,7 +171,6 @@ export default config({
                             };
                             return labels[props.value] || props.value;
                         },
-                        defaultValue: ['zh'],
                     }
                 ),
                 title: fields.slug({ name: { label: '條目名稱 (Title)' } }),
