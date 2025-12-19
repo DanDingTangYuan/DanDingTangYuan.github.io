@@ -25,6 +25,7 @@ import { glob } from 'astro/loaders';
 const devlog = defineCollection({
 	loader: glob({ base: './src/content/devlog', pattern: '**/*.{md,mdx,mdoc}' }),
 	schema: z.object({
+		languages: z.array(z.enum(['zh', 'ja'])).default(['zh']), // 支援的語言
 		title: z.string(), // 文章標題
 		description: z.string(), // 簡介/摘要
 		pubDate: z.coerce.date(), // 發布日期
@@ -49,6 +50,7 @@ const devlog = defineCollection({
 const blog = defineCollection({
 	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx,mdoc}' }),
 	schema: z.object({
+		languages: z.array(z.enum(['zh', 'ja'])).default(['zh']), // 支援的語言
 		title: z.string(), // 文章標題
 		description: z.string(), // 簡介/摘要
 		pubDate: z.coerce.date(), // 發布日期
@@ -71,6 +73,7 @@ const blog = defineCollection({
 const story = defineCollection({
 	loader: glob({ base: './src/content/story', pattern: '**/*.{md,mdx,mdoc}' }),
 	schema: z.object({
+		languages: z.array(z.enum(['zh', 'ja'])).default(['zh']), // 支援的語言
 		title: z.string(), // 章節標題
 		series: z.string(), // 系列名稱
 		chapter: z.number(), // 章節編號
@@ -94,11 +97,13 @@ const story = defineCollection({
 const wiki = defineCollection({
 	loader: glob({ base: './src/content/wiki', pattern: '**/*.{md,mdx,mdoc}' }),
 	schema: z.object({
+		languages: z.array(z.enum(['zh', 'ja'])).default(['zh']), // 支援的語言
 		title: z.string(), // 條目名稱
 		category: z.enum(['Character', 'Location', 'Item', 'Lore']), // 分類
 		updatedDate: z.coerce.date(), // 最後修訂時間
 		tags: z.array(z.string()).optional(), // 標籤
 		thumbnail: z.string().url().optional(), // 縮圖 URL
+		content: z.string(), // 內文
 	}),
 });
 

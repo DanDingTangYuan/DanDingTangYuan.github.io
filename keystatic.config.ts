@@ -14,9 +14,23 @@ export default config({
         devlog: collection({
             label: 'Devlog 開發日誌',
             slugField: 'title',
-            path: 'src/content/devlog/*', 
+            path: 'src/content/devlog/[language]/*', 
             format: { contentField: 'content' },    // 啟用 Markdown 編輯器
             schema: {
+                languages: fields.array(
+                    fields.checkbox(),
+                    {
+                        label: '語言 (Languages)',
+                        itemLabel: (props) => {
+                            const labels: Record<string, string> = {
+                                'zh': '中文 (Chinese)',
+                                'ja': '日本語 (Japanese)',
+                            };
+                            return labels[props.value] || props.value;
+                        },
+                        defaultValue: ['zh'],
+                    }
+                ),
                 title: fields.slug({ name: { label: '標題' } }),
                 description: fields.text({ label: '簡介/摘要', multiline: true}),
                 pubDate: fields.date({ label: '發布日期', defaultValue: {kind: 'today'}}),
@@ -44,9 +58,23 @@ export default config({
         blog: collection({
             label: 'Blog 部落格文章',
             slugField: 'title',
-            path: 'src/content/blog/*', 
+            path: 'src/content/blog/[language]/*', 
             format: { contentField: 'content' },
             schema: {
+                languages: fields.array(
+                    fields.checkbox(),
+                    {
+                        label: '語言 (Languages)',
+                        itemLabel: (props) => {
+                            const labels: Record<string, string> = {
+                                'zh': '中文 (Chinese)',
+                                'ja': '日本語 (Japanese)',
+                            };
+                            return labels[props.value] || props.value;
+                        },
+                        defaultValue: ['zh'],
+                    }
+                ),
                 title: fields.slug({ name: { label: '標題' } }),
                 description: fields.text({ label: '簡介/摘要', multiline: true}),
                 pubDate: fields.date({ label: '發布日期', defaultValue: {kind: 'today'}}),
@@ -62,9 +90,23 @@ export default config({
         story: collection({
             label: 'Story 小說/故事連載',
             slugField: 'title',
-            path: 'src/content/story/*', 
+            path: 'src/content/story/[language]/*', 
             format: { contentField: 'content' },
             schema: {
+                languages: fields.array(
+                    fields.checkbox(),
+                    {
+                        label: '語言 (Languages)',
+                        itemLabel: (props) => {
+                            const labels: Record<string, string> = {
+                                'zh': '中文 (Chinese)',
+                                'ja': '日本語 (Japanese)',
+                            };
+                            return labels[props.value] || props.value;
+                        },
+                        defaultValue: ['zh'],
+                    }
+                ),
                 title: fields.slug({ name: { label: '章節標題 (Title)' } }),
                 series: fields.text({ label: '系列名稱 (Series)', description: '作品名稱' }),
                 chapter: fields.integer({ label: '章節編號 (Chapter No.)', defaultValue: 1 }),
@@ -90,9 +132,23 @@ export default config({
         wiki: collection({
             label: '📚 Wiki | 設定集',
             slugField: 'title',
-            path: 'src/content/wiki/*',
+            path: 'src/content/wiki/[language]/*',
             format: { contentField: 'content' },
             schema: {
+                languages: fields.array(
+                    fields.checkbox(),
+                    {
+                        label: '語言 (Languages)',
+                        itemLabel: (props) => {
+                            const labels: Record<string, string> = {
+                                'zh': '中文 (Chinese)',
+                                'ja': '日本語 (Japanese)',
+                            };
+                            return labels[props.value] || props.value;
+                        },
+                        defaultValue: ['zh'],
+                    }
+                ),
                 title: fields.slug({ name: { label: '條目名稱 (Title)' } }),
                 
                 category: fields.select({
