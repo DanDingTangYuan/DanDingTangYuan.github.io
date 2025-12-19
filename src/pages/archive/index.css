@@ -1,0 +1,212 @@
+/* ============================================================================
+   全域重置 (修復背景沒填滿、Layout 跑版的問題)
+   ============================================================================ */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Archive 頁面樣式
+   用途：按時間線顯示所有文章
+*/
+
+/* 主容器 */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  width: 100%;
+}
+
+/* 頁面標題區域 */
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.page-header p {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+/* ============================================================================
+   Archive 容器
+   ============================================================================ */
+
+.archive-container {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ============================================================================
+   年份區塊
+   ============================================================================ */
+
+.archive-year-section {
+  margin-bottom: 3rem;
+}
+
+/* 年份標題區域 */
+.archive-year-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+/* 年份標題 */
+.archive-year {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+}
+
+/* 文章計數 */
+.archive-count {
+  background: #ecf0f1;
+  color: #7f8c8d;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* ============================================================================
+   文章列表
+   ============================================================================ */
+
+.archive-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* 單個文章項目 */
+.archive-post-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: white;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 文章項目懸停效果 */
+.archive-post-item:hover {
+  background: #f9f9f9;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateX(4px);
+}
+
+/* 文章日期 */
+.archive-post-date {
+  min-width: 80px;
+  font-size: 0.875rem;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+/* 文章標題 */
+.archive-post-title {
+  flex: 1;
+  font-size: 1rem;
+  color: #2c3e50;
+  font-weight: 500;
+  line-height: 1.4;
+  
+  /* 文字截斷 - 1 行 */
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 文章類型標籤 */
+.archive-post-type {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Blog 類型 - 藍色 */
+.archive-type-blog {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+/* DevLog 類型 - 紫色 */
+.archive-type-devlog {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+/* Story 類型 - 綠色 */
+.archive-type-story {
+  background: #e8f5e8;
+  color: #388e3c;
+}
+
+/* ============================================================================
+   響應式設計 - 小螢幕
+   ============================================================================ */
+
+@media (max-width: 720px) {
+  main {
+    padding: 2rem 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .archive-year-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .archive-post-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .archive-post-date {
+    min-width: auto;
+  }
+
+  .archive-post-title {
+    width: 100%;
+  }
+
+  .archive-post-type {
+    align-self: flex-start;
+  }
+}

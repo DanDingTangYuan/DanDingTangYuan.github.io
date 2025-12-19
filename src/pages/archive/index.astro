@@ -1,0 +1,130 @@
+---
+/**
+ * Archive 頁面 (archive/index.astro)
+ * 
+ * 用途：
+ * - 按時間線顯示所有文章
+ * - 按年份分組
+ * - 支援多語言
+ * 
+ * 路由：/archive
+ * 
+ * 說明：
+ * - 從所有內容集合中獲取文章
+ * - 按發布日期分組
+ * - 顯示年份和文章計數
+ */
+
+import BaseHead from "../../components/BaseHead.astro";
+import Footer from "../../components/Footer.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import Header from "../../components/Header.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
+import { getCollection } from "astro:content";
+import "./index.css";
+
+/* ============================================================================
+   內容獲取和處理
+   ============================================================================ */
+
+/** 從各個內容集合中獲取文章 */
+const blogPosts = await getCollection("blog");
+const devlogPosts = await getCollection("devlog");
+const storyPosts = await getCollection("story");
+
+/** 
+ * 合併所有內容並添加類型標記
+ */
+const allPosts = [
+  ...blogPosts.map(post => ({ ...post, type: "blog" as const, url: `/blog/${post.id}` })),
+  ...devlogPosts.map(post => ({ ...post, type: "devlog" as const, url: `/devlog/${post.id}` })),
+  ...storyPosts.map(post => ({ ...post, type: "story" as const, url: `/story/${post.id}` }))
+];
+
+/** 
+ * 按發布日期排序（最新的在前）
+ */
+const sortedPosts = allPosts.sort(
+  (a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
+);
+
+/* ============================================================================
+   按年份分組
+   ============================================================================ */
+
+/** 
+ * 將文章按年份分組
+ * 結構：{ year: [posts] }
+ */
+const postsByYear: Record<number, typeof sortedPosts> = {};
+
+sortedPosts.forEach(post => {
+  const year = new Date(post.data.pubDate).getFullYear();
+  if (!postsByYear[year]) {
+    postsByYear[year] = [];
+  }
+  postsByYear[year].push(post);
+});
+
+/** 
+ * 按年份降序排列（最新的年份在前）
+ */
+const years = Object.keys(postsByYear)
+  .map(Number)
+  .sort((a, b) => b - a);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`${SITE_TITLE} - Archive`} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    
+    <main>
+      {/* 頁面標題區域 */}
+      <section class="page-header">
+        <h1>Archive</h1>
+        <p>時間線上的所有文章</p>
+      </section>
+
+      {/* Archive 容器 */}
+      <div class="archive-container">
+        {/* 按年份顯示文章 */}
+        {years.map((year) => (
+          <div class="archive-year-section">
+            {/* 年份標題 */}
+            <div class="archive-year-header">
+              <h2 class="archive-year">{year}</h2>
+              <span class="archive-count">{postsByYear[year].length} articles</span>
+            </div>
+
+            {/* 該年份的文章列表 */}
+            <div class="archive-posts">
+              {postsByYear[year].map((post) => (
+                <a href={post.url} class="archive-post-item">
+                  {/* 日期 */}
+                  <span class="archive-post-date">
+                    <FormattedDate date={post.data.pubDate} />
+                  </span>
+
+                  {/* 文章標題 */}
+                  <span class="archive-post-title">{post.data.title}</span>
+
+                  {/* 文章類型標籤 */}
+                  <span class={`archive-post-type archive-type-${post.type}`}>
+                    {post.type === 'blog' ? 'Blog' : 
+                     post.type === 'devlog' ? 'DevLog' : 'Story'}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </main>
+    
+    <Footer />
+  </body>
+</html>

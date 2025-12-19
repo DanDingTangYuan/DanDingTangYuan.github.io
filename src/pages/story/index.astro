@@ -15,6 +15,8 @@
  * - 文章連結會帶上語言代碼（例如 /story/zh/post-id）
  * - 使用卡片網格佈局，與首頁風格一致
  * - 顯示系列名稱和章節號
+ * - 左側 Filter 側邊欄：Series、Status、Tags
+ * - 右側卡片列表：故事卡片（圖片在右側）
  */
 
 import { getCollection } from "astro:content";
@@ -36,6 +38,66 @@ import "./index.css";
 const posts = (await getCollection("story")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+/* ============================================================================
+   Filter 數據統計
+   ============================================================================ */
+
+/** 
+ * 統計所有文章中每個系列的使用次數
+ */
+const seriesFrequency: Record<string, number> = {};
+posts.forEach(post => {
+  if (post.data.series) {
+    seriesFrequency[post.data.series] = (seriesFrequency[post.data.series] || 0) + 1;
+  }
+});
+
+/** 按使用次數排序系列 */
+const sortedSeries = Object.entries(seriesFrequency)
+  .sort((a, b) => (b[1] as number) - (a[1] as number))
+  .map(entry => entry[0]);
+
+/** 
+ * 統計所有文章中每個連載狀態的使用次數
+ */
+const statusFrequency: Record<string, number> = {};
+posts.forEach(post => {
+  if (post.data.status) {
+    statusFrequency[post.data.status] = (statusFrequency[post.data.status] || 0) + 1;
+  }
+});
+
+/** 按使用次數排序連載狀態 */
+const sortedStatuses = Object.entries(statusFrequency)
+  .sort((a, b) => (b[1] as number) - (a[1] as number))
+  .map(entry => entry[0]);
+
+/** 
+ * 連載狀態標籤映射
+ */
+const statusLabels = {
+  ongoing: '連載中',
+  completed: '已完結',
+  hiatus: '暫停中'
+};
+
+/** 
+ * 統計所有文章中每個 tag 的使用次數
+ */
+const tagFrequency: Record<string, number> = {};
+posts.forEach(post => {
+  if (post.data.tags) {
+    post.data.tags.forEach(tag => {
+      tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+    });
+  }
+});
+
+/** 按使用次數排序 tag */
+const sortedTags = Object.entries(tagFrequency)
+  .sort((a, b) => (b[1] as number) - (a[1] as number))
+  .map(entry => entry[0]);
 ---
 
 <!doctype html>
@@ -54,59 +116,110 @@ const posts = (await getCollection("story")).sort(
         <p>創意寫作和故事連載</p>
       </section>
 
-      {/* 故事卡片網格 */}
-      <section class="cards-container">
-        <div class="cards-grid">
-          {
-            posts.map((post) => (
-              <article class="story-card">
-                {/* 卡片連結容器 */}
-                <a href={`/story/${post.id}`} class="card-link">
-                  {/* 卡片內容區域 */}
-                  <div class="card-content">
-                    {/* 系列名稱和章節號 */}
-                    <div class="card-series-info">
-                      {post.data.series && (
-                        <span class="series-name">{post.data.series}</span>
-                      )}
-                      {post.data.chapter && (
-                        <span class="chapter-number">第 {post.data.chapter} 章</span>
+      {/* 主容器：Filter 側邊欄 + 卡片區域 */}
+      <div class="content-wrapper">
+        {/* 左側：Filter 側邊欄 */}
+        <aside class="filter-sidebar">
+          {/* Series Filter */}
+          <div class="filter-section">
+            <h3 class="filter-title">系列</h3>
+            <div class="filter-items">
+              {sortedSeries.map((series) => (
+                <label class="filter-item">
+                  <input type="checkbox" value={series} class="series-filter" />
+                  <span class="filter-label">{series}</span>
+                  <span class="filter-count">{seriesFrequency[series]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Status Filter */}
+          <div class="filter-section">
+            <h3 class="filter-title">連載狀態</h3>
+            <div class="filter-items">
+              {sortedStatuses.map((status) => (
+                <label class="filter-item">
+                  <input type="checkbox" value={status} class="status-filter" />
+                  <span class="filter-label">{statusLabels[status]}</span>
+                  <span class="filter-count">{statusFrequency[status]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Tags Filter */}
+          <div class="filter-section">
+            <h3 class="filter-title">Tags</h3>
+            <div class="filter-items">
+              {sortedTags.map((tag) => (
+                <label class="filter-item">
+                  <input type="checkbox" value={tag} class="tag-filter" />
+                  <span class="filter-label">{tag}</span>
+                  <span class="filter-count">{tagFrequency[tag]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        {/* 右側：故事卡片網格 */}
+        <section class="cards-container">
+          <div class="cards-grid">
+            {
+              posts.map((post) => (
+                <article class="story-card">
+                  {/* 卡片連結容器 */}
+                  <a href={`/story/${post.id}`} class="card-link">
+                    {/* 卡片內容區域 - 左側 */}
+                    <div class="card-content">
+                      {/* 系列名稱和章節號 */}
+                      <div class="card-series-info">
+                        {post.data.series && (
+                          <span class="series-name">{post.data.series}</span>
+                        )}
+                        {post.data.chapter && (
+                          <span class="chapter-number">第 {post.data.chapter} 章</span>
+                        )}
+                      </div>
+
+                      {/* 文章標題 */}
+                      <h3 class="card-title">{post.data.title}</h3>
+                      
+                      {/* 故事標籤 */}
+                      {post.data.tags && post.data.tags.length > 0 && (
+                        <div class="card-tags">
+                          {post.data.tags
+                            .sort((a, b) => sortedTags.indexOf(a) - sortedTags.indexOf(b))
+                            .slice(0, 3)
+                            .map((tag) => (
+                              <span class="tag">{tag}</span>
+                            ))}
+                        </div>
                       )}
                     </div>
 
-                    {/* 文章標題 */}
-                    <h3 class="card-title">{post.data.title}</h3>
-                    
-                    {/* 故事標籤 */}
-                    {post.data.tags && post.data.tags.length > 0 && (
-                      <div class="card-tags">
-                        {post.data.tags.slice(0, 3).map((tag) => (
-                          <span class="tag">{tag}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                    {/* 卡片底部 - 日期和閱讀按鈕 */}
+                    <div class="card-footer">
+                      <span class="card-date">
+                        <FormattedDate date={post.data.pubDate} />
+                      </span>
+                      <span class="read-more">閱讀更多 →</span>
+                    </div>
+                  </a>
 
-                  {/* 卡片底部 - 日期和閱讀按鈕 */}
-                  <div class="card-footer">
-                    <span class="card-date">
-                      <FormattedDate date={post.data.pubDate} />
-                    </span>
-                    <span class="read-more">閱讀更多 →</span>
-                  </div>
-                </a>
-
-                {/* 卡片圖片區域（如果有封面圖） */}
-                {post.data.coverImage && (
-                  <div class="card-image">
-                    <img src={post.data.coverImage} alt={post.data.title} />
-                  </div>
-                )}
-              </article>
-            ))
-          }
-        </div>
-      </section>
+                  {/* 卡片圖片區域 - 右側（如果有封面圖） */}
+                  {post.data.coverImage && (
+                    <div class="card-image">
+                      <img src={post.data.coverImage} alt={post.data.title} />
+                    </div>
+                  )}
+                </article>
+              ))
+            }
+          </div>
+        </section>
+      </div>
     </main>
     
     {/* 頁面頁腳 */}

@@ -1,215 +1,321 @@
 /* ============================================================================
-   Wiki 首頁樣式 (wiki/index.css)
-   
-   用途：
-   - 控制 Wiki 設定集/百科條目列表的佈局和樣式
-   - 響應式設計
+   全域重置 (修復背景沒填滿、Layout 跑版的問題)
+   這段非常重要，確保你的 body 是一個撐滿畫面的 Flex 容器
    ============================================================================ */
-
-/* 
-   主容器
-   
-   說明：
-   - 寬度固定 960px
-*/
-main {
-  /* 寬度固定 960px */
-  width: 960px;
-}
-
-/* 
-   文章列表容器
-   
-   說明：
-   - 使用 flex 佈局，兩欄排列
-   - gap: 2rem 文章之間的距離
-   - list-style-type: none 移除列表符號
-*/
-ul {
-  /* 使用 flex 佈局 */
-  display: flex;
-  /* 自動換行 */
-  flex-wrap: wrap;
-  /* 文章之間的距離 */
-  gap: 2rem;
-  /* 移除列表符號 */
-  list-style-type: none;
-  /* 移除預設邊距 */
+html, body {
   margin: 0;
   padding: 0;
-}
-
-/* 
-   文章列表項目
-   
-   說明：
-   - 寬度 50%（兩欄排列）
-   - calc(50% - 1rem) 考慮 gap 的寬度
-*/
-ul li {
-  /* 寬度：50% - gap 的一半 */
-  width: calc(50% - 1rem);
-}
-
-/* 
-   文章列表項目內的所有元素
-   
-   說明：
-   - 移除連結底線
-   - 平滑過渡動畫
-*/
-ul li * {
-  /* 移除連結底線 */
-  text-decoration: none;
-  /* 平滑過渡動畫 */
-  transition: 0.2s ease;
-}
-
-/* 
-   第一個文章（置頂文章）
-   
-   說明：
-   - 寬度 100%（佔滿整行）
-   - 文字居中
-   - 下方邊距 1rem
-*/
-ul li:first-child {
-  /* 寬度：100% */
   width: 100%;
-  /* 下方邊距 */
-  margin-bottom: 1rem;
-  /* 文字居中 */
+  min-height: 100vh;
+  /* 關鍵：垂直排列，讓 Header/Main/Footer 正常堆疊 */
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden; /* 防止水平卷軸 */
+}
+
+/* Wiki 首頁樣式
+   用途：控制 Wiki 設定集/百科條目列表的佈局和樣式
+*/
+
+/* 主容器 */
+main {
+  /* 讓 main 自動填滿剩餘高度，這樣 Footer 才會被推到底部 */
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  padding: 4rem 2rem;
+  /* 背景漸層色 */
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  width: 100%;
+}
+
+/* 頁面標題區域 */
+.page-header {
   text-align: center;
+  margin-bottom: 3rem;
 }
 
-/* 
-   第一個文章的圖片
-   
-   說明：
-   - 寬度 100%（填滿容器）
-*/
-ul li:first-child img {
-  /* 寬度：100% */
+.page-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.page-header p {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+/* ============================================================================
+   佈局容器：Filter 側邊欄 + 卡片區域
+   ============================================================================ */
+.content-wrapper {
+  display: flex;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
   width: 100%;
+  align-items: flex-start; /* 確保側邊欄不會被拉伸 */
 }
 
-/* 
-   第一個文章的標題
-   
-   說明：
-   - 字體大小 2.369rem（較大）
-*/
-ul li:first-child .title {
-  /* 字體大小：2.369rem */
-  font-size: 2.369rem;
+/* 卡片列表容器 */
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* 佔滿剩餘寬度 */
+  min-width: 0; /* 防止 Flex 子元素溢出 */
 }
 
-/* 
-   文章圖片
-   
-   說明：
-   - 下方邊距 0.5rem
-   - 圓角 12px
-*/
-ul li img {
-  /* 下方邊距 */
-  margin-bottom: 0.5rem;
-  /* 圓角半徑 */
+/* ============================================================================
+   Filter 側邊欄 (保持原樣)
+   ============================================================================ */
+.filter-sidebar {
+  width: 250px;
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+  flex-shrink: 0;
+}
+
+.filter-section { margin-bottom: 1.5rem; }
+.filter-section:last-child { margin-bottom: 0; }
+
+.filter-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 0.75rem 0;
+}
+
+.filter-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-item:hover { color: #3498db; }
+.filter-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+.filter-label { flex: 1; color: #34495e; }
+
+.filter-count {
+  background: #ecf0f1;
+  color: #7f8c8d;
+  padding: 0.25rem 0.5rem;
   border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
-/* 
-   文章連結
-   
-   說明：
-   - display: block 讓連結填滿容器
+/* ============================================================================
+   卡片樣式 (這裡是修正重點！)
+   ============================================================================ */
+.cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.wiki-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  
+  /* 卡片本體是橫向排列：左邊是連結區(文字)，右邊是圖片區 */
+  display: flex; 
+  flex-direction: row; 
+  align-items: stretch;
+  
+  width: 100%;
+  padding: 0;
+  height: 300px; /* 固定高度 */
+  transition: all 0.3s ease;
+}
+
+.wiki-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* 修正重點 1：卡片連結容器 (.card-link)
+   它負責包裹左側的文字內容。
+   - 必須設為 flex: 1，讓它佔據除了圖片以外的所有空間
+   - 必須設為 column，這樣內容(content)和底部(footer)才會垂直排列
 */
-ul li a {
-  /* 顯示為區塊元素 */
-  display: block;
+.card-link {
+  position: relative; /* === 加上這一行，這是定位的錨點 === */
+  display: flex;
+  flex-direction: column; /* 垂直排列！！ */
+  flex: 1; /* 佔滿剩餘空間，而不是 width: 100% */
+  min-width: 0; /* 防止內容撐爆 */
+  text-decoration: none; /* 移除連結底線 */
 }
 
-/* 
-   文章標題
-   
-   說明：
-   - 邊距：0
-   - 文字顏色：黑色（CSS 變數）
-   - 行高：1（緊湊）
+/* 卡片內容區域 - 左側上部 */
+.card-content {
+  flex: 1; /* 佔滿剩餘高度，把 footer 推到底部 */
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  /* 這裡不需要 justify-content: space-between 了，因為我們用 flex: 1 控制高度 */
+}
+
+/* 分類徽章 */
+.category-badge {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  width: fit-content;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #2c3e50;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  padding-right: 110px; /* 預留空間給右上角的日期，避免文字重疊 */
+}
+
+/* Tags */
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem; /* 稍微留點空間 */
+}
+
+.tag {
+  background: #ecf0f1;
+  color: #34495e;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* 修正重點 2：卡片底部 (.card-footer)
+   它包含日期和按鈕
 */
-.title {
-  /* 邊距：0 */
-  margin: 0;
-  /* 文字顏色：黑色（CSS 變數） */
-  color: rgb(var(--black));
-  /* 行高：1 */
-  line-height: 1;
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem 1.5rem 1.5rem 1.5rem; /* 給一點內邊距 */
+  gap: 1rem;
+  /* 上方加一條淡淡的分隔線會比較好看，不加也可以 */
+  border-top: 1px solid #f0f0f0; 
+  margin-top: auto; /* 再次確保它貼底 */
 }
 
-/* 
-   發布日期
-   
-   說明：
-   - 邊距：0
-   - 文字顏色：灰色（CSS 變數）
+.card-date {
+  position: absolute;
+  top: 1.5rem;   /* 距離頂部 1.5rem (跟 card-content 的 padding 一樣) */
+  right: 1.5rem; /* 距離右邊 1.5rem */
+
+  background: #ecf0f1;
+  color: #34495e;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.read-more {
+  background: #3498db;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.wiki-card:hover .read-more {
+  background: #2980b9;
+}
+
+/* 卡片圖片區域 - 右側
+   因為 .card-link 已經設為 flex: 1，這裡只要確保不縮放即可
 */
-.date {
-  /* 邊距：0 */
-  margin: 0;
-  /* 文字顏色：灰色（CSS 變數） */
-  color: rgb(var(--gray));
+.card-image {
+  /* 寬度由 aspect-ratio 自動計算，高度跟隨父容器 */
+  width: auto;
+  aspect-ratio: 5 / 7;
+  height: 100%;
+  overflow: hidden;
+  flex-shrink: 0; /* 禁止被壓縮！！ */
+  border-radius: 0 20px 20px 0; /* 只有右邊圓角 */
 }
 
-/* 
-   文章連結懸停效果 - 標題和日期
-   
-   說明：
-   - 文字顏色變成強調色（CSS 變數）
-*/
-ul li a:hover h4,
-ul li a:hover .date {
-  /* 文字顏色：強調色（CSS 變數） */
-  color: rgb(var(--accent));
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
-/* 
-   文章連結懸停效果 - 圖片
-   
-   說明：
-   - 添加陰影效果
-*/
-ul a:hover img {
-  /* 陰影效果（CSS 變數） */
-  box-shadow: var(--box-shadow);
-}
-
-/* 
-   響應式設計 - 小螢幕
-   
-   說明：
-   - 當螢幕寬度小於 720px 時
-   - 改為單欄排列
-   - 調整字體大小
+/* RWD: 手機版樣式 
 */
 @media (max-width: 720px) {
-  /* 減少文章之間的距離 */
-  ul {
-    gap: 0.5em;
+  .content-wrapper {
+    flex-direction: column; /* 側邊欄跑到上面 */
   }
 
-  /* 文章寬度改為 100%（單欄） */
-  ul li {
+  .filter-sidebar {
     width: 100%;
-    text-align: center;
+    position: static; /* 手機版不需要 sticky */
+    margin-bottom: 2rem;
   }
 
-  /* 第一個文章的下方邊距改為 0 */
-  ul li:first-child {
-    margin-bottom: 0;
+  /* 手機版卡片變垂直排列 */
+  .wiki-card {
+    flex-direction: column; 
+    height: auto; /* 高度自動 */
   }
 
-  /* 第一個文章的標題字體大小改為 1.563em */
-  ul li:first-child .title {
-    font-size: 1.563em;
+  /* 圖片移到最上面 (如果想要圖在上，要在 HTML 調整順序，或者用 order 屬性) */
+  /* 目前 HTML 結構圖在下，用 flex-direction: column-reverse 讓圖跑到上面 */
+  .wiki-card {
+    flex-direction: column-reverse; 
+  }
+
+  .card-image {
+    width: 100%;
+    height: 200px; /* 給個固定高度 */
+    aspect-ratio: unset;
+    border-radius: 20px 20px 0 0; /* 上方圓角 */
+  }
+
+  .card-link {
+    width: 100%;
   }
 }

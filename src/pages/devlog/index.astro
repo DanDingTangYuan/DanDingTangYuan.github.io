@@ -15,6 +15,8 @@
  * - 文章連結會帶上語言代碼（例如 /devlog/zh/post-id）
  * - 使用卡片網格佈局，與首頁風格一致
  * - 顯示專案狀態和技術標籤
+ * - 左側 Filter 側邊欄：Tags、Project Status、Version
+ * - 右側卡片列表：開發日誌卡片（圖片在右側）
  */
 
 import { getCollection } from "astro:content";
@@ -47,6 +49,66 @@ const statusLabels = {
   completed: '已完成',
   abandoned: '已棄坑'
 };
+
+/* ============================================================================
+   Filter 數據統計
+   ============================================================================ */
+
+/** 
+ * 統計所有文章中每個 tag 的使用次數
+ */
+const tagFrequency: Record<string, number> = {};
+posts.forEach(post => {
+  if (post.data.tags) {
+    post.data.tags.forEach(tag => {
+      tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+    });
+  }
+});
+
+/** 按使用次數排序 tag */
+const sortedTags = Object.entries(tagFrequency)
+  .sort((a, b) => (b[1] as number) - (a[1] as number))
+  .map(entry => entry[0]);
+
+/** 
+ * 統計所有文章中每個專案狀態的使用次數
+ */
+const statusFrequency: Record<string, number> = {};
+posts.forEach(post => {
+  if (post.data.projectStatus) {
+    statusFrequency[post.data.projectStatus] = (statusFrequency[post.data.projectStatus] || 0) + 1;
+  }
+});
+
+/** 按使用次數排序專案狀態 */
+const sortedStatuses = Object.entries(statusFrequency)
+  .sort((a, b) => (b[1] as number) - (a[1] as number))
+  .map(entry => entry[0]);
+
+/** 
+ * 統計所有文章中每個版本的使用次數
+ */
+const versionFrequency: Record<string, number> = {};
+posts.forEach(post => {
+  if (post.data.version) {
+    versionFrequency[post.data.version] = (versionFrequency[post.data.version] || 0) + 1;
+  }
+});
+
+/** 按版本號排序（降序） */
+const sortedVersions = Object.entries(versionFrequency)
+  .sort((a, b) => {
+    const aVersion = a[0].split('.').map(Number);
+    const bVersion = b[0].split('.').map(Number);
+    for (let i = 0; i < Math.max(aVersion.length, bVersion.length); i++) {
+      const aPart = aVersion[i] || 0;
+      const bPart = bVersion[i] || 0;
+      if (aPart !== bPart) return bPart - aPart;
+    }
+    return 0;
+  })
+  .map(entry => entry[0]);
 ---
 
 <!doctype html>
@@ -65,66 +127,119 @@ const statusLabels = {
         <p>開發進度和技術筆記</p>
       </section>
 
-      {/* 開發日誌卡片網格 */}
-      <section class="cards-container">
-        <div class="cards-grid">
-          {
-            posts.map((post) => (
-              <article class="devlog-card">
-                {/* 卡片連結容器 */}
-                <a href={`/devlog/${post.id}`} class="card-link">
-                  {/* 卡片內容區域 */}
-                  <div class="card-content">
-                    {/* 文章標題 */}
-                    <h3 class="card-title">{post.data.title}</h3>
-                    
-                    {/* 文章描述 */}
-                    {post.data.description && (
-                      <p class="card-description">{post.data.description}</p>
-                    )}
-                    
-                    {/* 專案狀態和版本 */}
-                    <div class="card-meta-info">
-                      {post.data.projectStatus && (
-                        <span class={`status-badge status-${post.data.projectStatus}`}>
-                          {statusLabels[post.data.projectStatus]}
-                        </span>
+      {/* 主容器：Filter 側邊欄 + 卡片區域 */}
+      <div class="content-wrapper">
+        {/* 左側：Filter 側邊欄 */}
+        <aside class="filter-sidebar">
+          {/* Tags Filter */}
+          <div class="filter-section">
+            <h3 class="filter-title">Tags</h3>
+            <div class="filter-items">
+              {sortedTags.map((tag) => (
+                <label class="filter-item">
+                  <input type="checkbox" value={tag} class="tag-filter" />
+                  <span class="filter-label">{tag}</span>
+                  <span class="filter-count">{tagFrequency[tag]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Project Status Filter */}
+          <div class="filter-section">
+            <h3 class="filter-title">專案狀態</h3>
+            <div class="filter-items">
+              {sortedStatuses.map((status) => (
+                <label class="filter-item">
+                  <input type="checkbox" value={status} class="status-filter" />
+                  <span class="filter-label">{statusLabels[status]}</span>
+                  <span class="filter-count">{statusFrequency[status]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Version Filter */}
+          {sortedVersions.length > 0 && (
+            <div class="filter-section">
+              <h3 class="filter-title">版本</h3>
+              <div class="filter-items">
+                {sortedVersions.map((version) => (
+                  <label class="filter-item">
+                    <input type="checkbox" value={version} class="version-filter" />
+                    <span class="filter-label">{version}</span>
+                    <span class="filter-count">{versionFrequency[version]}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+        </aside>
+
+        {/* 右側：開發日誌卡片網格 */}
+        <section class="cards-container">
+          <div class="cards-grid">
+            {
+              posts.map((post) => (
+                <article class="devlog-card">
+                  {/* 卡片連結容器 */}
+                  <a href={`/devlog/${post.id}`} class="card-link">
+                    {/* 卡片內容區域 - 左側 */}
+                    <div class="card-content">
+                      {/* 文章標題 */}
+                      <h3 class="card-title">{post.data.title}</h3>
+                      
+                      {/* 文章描述 */}
+                      {post.data.description && (
+                        <p class="card-description">{post.data.description}</p>
                       )}
-                      {post.data.version && (
-                        <span class="version-badge">v{post.data.version}</span>
+                      
+                      {/* 專案狀態和版本 */}
+                      <div class="card-meta-info">
+                        {post.data.projectStatus && (
+                          <span class={`status-badge status-${post.data.projectStatus}`}>
+                            {statusLabels[post.data.projectStatus]}
+                          </span>
+                        )}
+                        {post.data.version && (
+                          <span class="version-badge">{post.data.version}</span>
+                        )}
+                      </div>
+                      
+                      {/* 技術標籤 */}
+                      {post.data.tags && post.data.tags.length > 0 && (
+                        <div class="card-tags">
+                          {post.data.tags
+                            .sort((a, b) => sortedTags.indexOf(a) - sortedTags.indexOf(b))
+                            .slice(0, 3)
+                            .map((tag) => (
+                              <span class="tag">{tag}</span>
+                            ))}
+                        </div>
                       )}
                     </div>
-                    
-                    {/* 技術標籤 */}
-                    {post.data.tags && post.data.tags.length > 0 && (
-                      <div class="card-tags">
-                        {post.data.tags.slice(0, 3).map((tag) => (
-                          <span class="tag">{tag}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
 
-                  {/* 卡片底部 - 日期和閱讀按鈕 */}
-                  <div class="card-footer">
-                    <span class="card-date">
-                      <FormattedDate date={post.data.pubDate} />
-                    </span>
-                    <span class="read-more">閱讀更多 →</span>
-                  </div>
-                </a>
+                    {/* 卡片底部 - 日期和閱讀按鈕 */}
+                    <div class="card-footer">
+                      <span class="card-date">
+                        <FormattedDate date={post.data.pubDate} />
+                      </span>
+                      <span class="read-more">閱讀更多 →</span>
+                    </div>
+                  </a>
 
-                {/* 卡片圖片區域（如果有縮圖） */}
-                {post.data.thumbnail && (
-                  <div class="card-image">
-                    <img src={post.data.thumbnail} alt={post.data.title} />
-                  </div>
-                )}
-              </article>
-            ))
-          }
-        </div>
-      </section>
+                  {/* 卡片圖片區域 - 右側（如果有縮圖） */}
+                  {post.data.thumbnail && (
+                    <div class="card-image">
+                      <img src={post.data.thumbnail} alt={post.data.title} />
+                    </div>
+                  )}
+                </article>
+              ))
+            }
+          </div>
+        </section>
+      </div>
     </main>
     
     {/* 頁面頁腳 */}

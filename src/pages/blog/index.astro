@@ -14,6 +14,8 @@
  * - 此頁面顯示所有語言的文章
  * - 文章連結會帶上語言代碼（例如 /blog/zh/post-id）
  * - 使用卡片網格佈局，與首頁風格一致
+ * - 左側 Filter 側邊欄：Tags（按使用頻率排序）
+ * - 右側卡片列表：文章卡片（圖片在右側）
  */
 
 import { getCollection } from "astro:content";
@@ -35,6 +37,32 @@ import "./index.css";
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+/* ============================================================================
+   Tag 統計與排序
+   ============================================================================ */
+
+/** 
+ * 統計所有文章中每個 tag 的使用次數
+ * 用於後續按使用頻率排序 tag
+ */
+const tagFrequency: Record<string, number> = {};
+posts.forEach(post => {
+  if (post.data.tags) {
+    post.data.tags.forEach(tag => {
+      tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+    });
+  }
+});
+
+/** 
+ * 按使用次數排序 tag
+ * 使用次數多的 tag 排在前面
+ * 例如：['React', 'JavaScript', 'Web', 'CSS', ...]
+ */
+const sortedTags = Object.entries(tagFrequency)
+  .sort((a, b) => (b[1] as number) - (a[1] as number))
+  .map(entry => entry[0]);
 ---
 
 <!doctype html>
@@ -53,54 +81,77 @@ const posts = (await getCollection("blog")).sort(
         <p>探索我的文章和想法</p>
       </section>
 
-      {/* 文章卡片網格 */}
-      <section class="cards-container">
-        <div class="cards-grid">
-          {
-            posts.map((post) => (
-              <article class="blog-card">
-                {/* 卡片連結容器 */}
-                <a href={`/blog/${post.id}`} class="card-link">
-                  {/* 卡片內容區域 */}
-                  <div class="card-content">
-                    {/* 文章標題 */}
-                    <h3 class="card-title">{post.data.title}</h3>
-                    
-                    {/* 文章描述 */}
-                    {post.data.description && (
-                      <p class="card-description">{post.data.description}</p>
-                    )}
-                    
-                    {/* 文章標籤 */}
-                    {post.data.tags && post.data.tags.length > 0 && (
-                      <div class="card-tags">
-                        {post.data.tags.slice(0, 3).map((tag) => (
-                          <span class="tag">{tag}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+      {/* 主容器：Filter 側邊欄 + 卡片區域 */}
+      <div class="content-wrapper">
+        {/* 左側：Filter 側邊欄 */}
+        <aside class="filter-sidebar">
+          {/* Tags Filter */}
+          <div class="filter-section">
+            <h3 class="filter-title">Tags</h3>
+            <div class="filter-items">
+              {sortedTags.map((tag) => (
+                <label class="filter-item">
+                  <input type="checkbox" value={tag} class="tag-filter" />
+                  <span class="filter-label">{tag}</span>
+                  <span class="filter-count">{tagFrequency[tag]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </aside>
 
-                  {/* 卡片底部 - 日期和閱讀按鈕 */}
-                  <div class="card-footer">
-                    <span class="card-date">
-                      <FormattedDate date={post.data.pubDate} />
-                    </span>
-                    <span class="read-more">閱讀更多 →</span>
-                  </div>
-                </a>
+        {/* 右側：文章卡片網格 */}
+        <section class="cards-container">
+          <div class="cards-grid">
+            {
+              posts.map((post) => (
+                <article class="blog-card">
+                  {/* 卡片連結容器 */}
+                  <a href={`/blog/${post.id}`} class="card-link">
+                    {/* 卡片內容區域 - 左側 */}
+                    <div class="card-content">
+                      {/* 文章標題 */}
+                      <h3 class="card-title">{post.data.title}</h3>
+                      
+                      {/* 文章描述 */}
+                      {post.data.description && (
+                        <p class="card-description">{post.data.description}</p>
+                      )}
+                      
+                      {/* 文章標籤 */}
+                      {post.data.tags && post.data.tags.length > 0 && (
+                        <div class="card-tags">
+                          {post.data.tags
+                            .sort((a, b) => sortedTags.indexOf(a) - sortedTags.indexOf(b))
+                            .slice(0, 3)
+                            .map((tag) => (
+                              <span class="tag">{tag}</span>
+                            ))}
+                        </div>
+                      )}
+                    </div>
 
-                {/* 卡片圖片區域（如果有縮圖） */}
-                {post.data.thumbnail && (
-                  <div class="card-image">
-                    <img src={post.data.thumbnail} alt={post.data.title} />
-                  </div>
-                )}
-              </article>
-            ))
-          }
-        </div>
-      </section>
+                    {/* 卡片底部 - 日期和閱讀按鈕 */}
+                    <div class="card-footer">
+                      <span class="card-date">
+                        <FormattedDate date={post.data.pubDate} />
+                      </span>
+                      <span class="read-more">閱讀更多 →</span>
+                    </div>
+                  </a>
+
+                  {/* 卡片圖片區域 - 右側（如果有縮圖） */}
+                  {post.data.thumbnail && (
+                    <div class="card-image">
+                      <img src={post.data.thumbnail} alt={post.data.title} />
+                    </div>
+                  )}
+                </article>
+              ))
+            }
+          </div>
+        </section>
+      </div>
     </main>
     
     {/* 頁面頁腳 */}

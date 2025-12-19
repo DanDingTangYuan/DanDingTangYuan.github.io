@@ -13,6 +13,8 @@
  * 說明：
  * - 此頁面顯示所有語言的條目
  * - 條目連結會帶上語言代碼（例如 /wiki/zh/entry-id）
+ * - 左側 Filter 側邊欄：Category、Tags
+ * - 右側卡片列表：條目卡片（圖片在右側）
  */
 
 import { getCollection } from "astro:content";
@@ -31,29 +33,143 @@ import "./index.css";
  * - 包含所有語言的條目
  */
 const posts = (await getCollection("wiki")).sort();
+
+/* ============================================================================
+   Filter 數據統計
+   ============================================================================ */
+
+/** 
+ * 統計所有條目中每個分類的使用次數
+ */
+const categoryFrequency: Record<string, number> = {};
+posts.forEach(post => {
+  if (post.data.category) {
+    categoryFrequency[post.data.category] = (categoryFrequency[post.data.category] || 0) + 1;
+  }
+});
+
+/** 按使用次數排序分類 */
+const sortedCategories = Object.entries(categoryFrequency)
+  .sort((a, b) => (b[1] as number) - (a[1] as number))
+  .map(entry => entry[0]);
+
+/** 
+ * 統計所有條目中每個 tag 的使用次數
+ */
+const tagFrequency: Record<string, number> = {};
+posts.forEach(post => {
+  if (post.data.tags) {
+    post.data.tags.forEach(tag => {
+      tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+    });
+  }
+});
+
+/** 按使用次數排序 tag */
+const sortedTags = Object.entries(tagFrequency)
+  .sort((a, b) => (b[1] as number) - (a[1] as number))
+  .map(entry => entry[0]);
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead title={`${SITE_TITLE} - Wiki`} description={SITE_DESCRIPTION} />
   </head>
   <body>
     <Header />
     <main>
-      <section>
-        <ul>
-          {
-            posts.map((post) => (
-              <li>
-                <a href={`/wiki/${post.id}`}>
-                  <h4 class="title">{post.data.title}</h4>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+      {/* 頁面標題區域 */}
+      <section class="page-header">
+        <h1>Wiki</h1>
+        <p>世界觀設定和角色資料</p>
       </section>
+
+      {/* 主容器：Filter 側邊欄 + 卡片區域 */}
+      <div class="content-wrapper">
+        {/* 左側：Filter 側邊欄 */}
+        <aside class="filter-sidebar">
+          {/* Category Filter */}
+          <div class="filter-section">
+            <h3 class="filter-title">分類</h3>
+            <div class="filter-items">
+              {sortedCategories.map((category) => (
+                <label class="filter-item">
+                  <input type="checkbox" value={category} class="category-filter" />
+                  <span class="filter-label">{category}</span>
+                  <span class="filter-count">{categoryFrequency[category]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Tags Filter */}
+          <div class="filter-section">
+            <h3 class="filter-title">Tags</h3>
+            <div class="filter-items">
+              {sortedTags.map((tag) => (
+                <label class="filter-item">
+                  <input type="checkbox" value={tag} class="tag-filter" />
+                  <span class="filter-label">{tag}</span>
+                  <span class="filter-count">{tagFrequency[tag]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        {/* 右側：條目卡片網格 */}
+        <section class="cards-container">
+          <div class="cards-grid">
+            {
+              posts.map((post) => (
+                <article class="wiki-card">
+                  {/* 卡片連結容器 */}
+                  <a href={`/wiki/${post.id}`} class="card-link">
+                    {/* 卡片內容區域 - 左側 */}
+                    <div class="card-content">
+                      {/* 分類標籤 */}
+                      {post.data.category && (
+                        <span class="category-badge">{post.data.category}</span>
+                      )}
+
+                      {/* 條目標題 */}
+                      <h3 class="card-title">{post.data.title}</h3>
+                      
+                      {/* 條目標籤 */}
+                      {post.data.tags && post.data.tags.length > 0 && (
+                        <div class="card-tags">
+                          {post.data.tags
+                            .sort((a, b) => sortedTags.indexOf(a) - sortedTags.indexOf(b))
+                            .slice(0, 3)
+                            .map((tag) => (
+                              <span class="tag">{tag}</span>
+                            ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 卡片底部 - 更新時間和閱讀按鈕 */}
+                    <div class="card-footer">
+                      <span class="card-date">
+                        <FormattedDate date={post.data.updatedDate} />
+                      </span>
+                      <span class="read-more">查看 →</span>
+                    </div>
+                  </a>
+
+                  {/* 卡片圖片區域 - 右側（如果有縮圖） */}
+                  {post.data.thumbnail && (
+                    <div class="card-image">
+                      <img src={post.data.thumbnail} alt={post.data.title} />
+                    </div>
+                  )}
+                </article>
+              ))
+            }
+          </div>
+        </section>
+      </div>
     </main>
     <Footer />
   </body>
