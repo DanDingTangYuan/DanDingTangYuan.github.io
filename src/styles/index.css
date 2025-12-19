@@ -7,7 +7,7 @@ body, html {
     margin: 0 !important;
     padding: 0 !important;
     width: 100%;
-    overflow-x: hidden; /* 防止橫向捲軸 */
+    /* overflow-x: hidden; 防止橫向捲軸 */
 }
 
 /* 
@@ -293,6 +293,8 @@ header.nav-solid {
     /* 左右自動邊距，讓容器居中 */
     margin-left: auto;
     margin-right: auto;
+    align-items: flex-start; 
+    /* 確保 Sidebar 和文章區域都是從頂部開始排，而且高度不會被強制拉伸到一樣長 */
 }
 
 /* 
@@ -315,7 +317,7 @@ header.nav-solid {
    說明：
    - 使用 flex 垂直排列卡片
    - min-width: 600px 卡片最小寬度
-   - max-width: 800px 卡片最大寬度
+   - max-width: 900px 卡片最大寬度
    - flex: 1 讓卡片區域填滿剩餘空間
 */
 .cards-grid {
@@ -749,7 +751,9 @@ html {
    說明：
    - 寬度固定 280px
    - 背景白色，圓角 20px
-   - position: sticky 讓側邊欄在滾動時保持在視窗內
+   - position: fixed 讓側邊欄固定在視窗內
+   - JavaScript 會動態計算 top 值，卡在 Hero 和 Footer 的邊界
+   - 側邊欄會停留在 dummy-content 區塊內，不會進入 Hero 或 Footer
    - flex-shrink: 0 防止側邊欄被壓縮
 */
 .sidebar {
@@ -766,15 +770,38 @@ html {
     /* 文字居中 */
     text-align: center;
     
-    /* 讓側邊欄在滾動時保持在視窗內 */
+    /* 
+       黏性定位：側邊欄隨著 content-wrapper 滾動
+       
+       說明：
+       - position: sticky 讓側邊欄在滾動時保持在視窗內
+       - 但仍在 flex 容器內，不會跑版
+       - JavaScript 會動態計算 top 值，防止進入 Hero 或 Footer
+    */
     position: sticky;
-    /* 距離視窗頂部 100px，避免被 Header 擋住 */
+    /* 距離視窗頂部 100px，會由 JavaScript 動態調整 */
     top: 100px;
     /* 高度自動適應內容 */
     height: fit-content;
+    /* 確保側邊欄在卡片上方 */
+    z-index: 50;
     
     /* 防止側邊欄被壓縮 */
     flex-shrink: 0;
+}
+
+/* 
+   側邊欄內容容器
+   
+   說明：
+   - 包裹側邊欄內的所有內容（頭像、名稱、簡介、連結）
+   - 使用 flex 佈局排列內容
+*/
+.sidebar-content {
+    /* 使用 flex 佈局 */
+    display: flex;
+    /* 垂直排列內容 */
+    flex-direction: column;
 }
 
 /* 
