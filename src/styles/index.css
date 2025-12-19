@@ -265,19 +265,72 @@ header.nav-solid {
    使用 flexbox 垂直排列卡片
    max-width: 800px 限制寬度，margin: auto 居中
 */
+/* ============================================================================
+   內容包裝容器 - 卡片區域 + 側邊欄
+   ============================================================================ */
+
 /* 
-   卡片網格容器
-   固定寬度 800px，避免在小螢幕上跑版
-   margin: auto 讓容器在頁面中居中
+   主容器：使用 flex 佈局並排放置卡片區域和側邊欄
+   
+   佈局說明：
+   - 使用 flex 讓卡片區域和側邊欄並排
+   - gap: 2rem 為卡片區域和側邊欄之間留出 2rem 的距離
+   - min-width: 600px 確保最小寬度（只有卡片時）
+   - max-width: 1200px 確保最大寬度（卡片 + 側邊欄時）
+   - margin: auto 讓容器在頁面中居中
 */
-.cards-grid {
+.content-wrapper {
+    /* 使用 flex 佈局 */
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    /* 卡片和側邊欄之間的距離 */
+    gap: 2rem;
+    /* 下方邊距 */
     margin-bottom: 3rem;
-    width: 800px; /* 固定寬度 */
+    /* 最小寬度：只有卡片時 */
+    min-width: 600px;
+    /* 最大寬度：卡片 + 側邊欄時 */
+    max-width: 1200px;
+    /* 左右自動邊距，讓容器居中 */
     margin-left: auto;
     margin-right: auto;
+}
+
+/* 
+   卡片區域容器
+   
+   說明：
+   - flex: 1 讓卡片區域填滿剩餘空間
+   - min-width: 0 防止 flex 子元素溢出
+*/
+.cards-section {
+    /* 填滿剩餘空間 */
+    flex: 1;
+    /* 防止 flex 子元素溢出 */
+    min-width: 0;
+}
+
+/* 
+   卡片網格容器
+   
+   說明：
+   - 使用 flex 垂直排列卡片
+   - min-width: 600px 卡片最小寬度
+   - max-width: 800px 卡片最大寬度
+   - flex: 1 讓卡片區域填滿剩餘空間
+*/
+.cards-grid {
+    /* 使用 flex 佈局 */
+    display: flex;
+    /* 垂直排列卡片 */
+    flex-direction: column;
+    /* 卡片之間的距離 */
+    gap: 1.5rem;
+    /* 卡片最小寬度 */
+    min-width: 600px;
+    /* 卡片最大寬度 */
+    max-width: 900px;
+    /* 填滿剩餘空間 */
+    flex: 1;
 }
 
 /* ============================================================================
@@ -291,21 +344,33 @@ header.nav-solid {
    - 右側：動態寬度的圖片（寬度 = 高度 × 5/7）
    
    高度固定為 300px，圖片會根據此高度自動計算寬度
+   這樣保持圖片與卡片的比例關係
 */
 .update-card {
+    /* 背景顏色：白色 */
     background: white;
+    /* 圓角半徑：20px */
     border-radius: 20px;
-    overflow: hidden; /* 確保圖片圓角貼邊 */
+    /* 隱藏超出邊界的內容，確保圖片圓角貼邊 */
+    overflow: hidden;
+    /* 陰影效果：4px 模糊，20px 擴散，黑色 10% 透明度 */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     
+    /* 使用 flex 佈局 */
     display: flex;
+    /* 水平排列（內容在左，圖片在右） */
     flex-direction: row;
+    /* 垂直居中對齐 */
     align-items: stretch;
     
+    /* 寬度：填滿父容器 */
     width: 100%;
+    /* 內邊距：無 */
     padding: 0;
-    height: 300px; /* 固定卡片高度，圖片會根據此高度調整寬度 */
+    /* 高度：固定 300px，圖片會根據此高度調整寬度 */
+    height: 300px;
     
+    /* 平滑過渡動畫 */
     transition: all 0.3s ease;
 }
 
@@ -636,3 +701,231 @@ header.nav-solid {
    
    如果需要在特定螢幕尺寸上調整，可以在此添加新的 @media 查詢
 */
+
+
+/* ============================================================================
+   平滑滾動效果
+   ============================================================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+.hero-card {
+  cursor: pointer;
+}
+
+.hero-card:active {
+  transform: scale(0.98);
+}
+
+/* ============================================================================
+   側邊欄 - 個人資訊卡片
+   ============================================================================ */
+
+/* 
+   側邊欄容器
+   
+   說明：
+   - 寬度固定 280px
+   - 背景白色，圓角 20px
+   - position: sticky 讓側邊欄在滾動時保持在視窗內
+   - flex-shrink: 0 防止側邊欄被壓縮
+*/
+.sidebar {
+    /* 寬度固定 280px */
+    width: 280px;
+    /* 背景顏色：白色 */
+    background: white;
+    /* 圓角半徑：20px */
+    border-radius: 20px;
+    /* 內邊距：上下 2rem，左右 1.5rem */
+    padding: 2rem 1.5rem;
+    /* 陰影效果：4px 模糊，20px 擴散，黑色 10% 透明度 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    /* 文字居中 */
+    text-align: center;
+    
+    /* 讓側邊欄在滾動時保持在視窗內 */
+    position: sticky;
+    /* 距離視窗頂部 100px，避免被 Header 擋住 */
+    top: 100px;
+    /* 高度自動適應內容 */
+    height: fit-content;
+    
+    /* 防止側邊欄被壓縮 */
+    flex-shrink: 0;
+}
+
+/* 
+   頭像容器
+   
+   說明：
+   - 寬高 120px 的正方形
+   - border-radius: 50% 變成圓形
+   - 邊框 4px，背景淺灰色
+   - 陰影效果
+*/
+.sidebar-avatar {
+    /* 寬度：120px */
+    width: 120px;
+    /* 高度：120px */
+    height: 120px;
+    /* 邊距：上下 0，左右 auto（居中），下方 1.5rem */
+    margin: 0 auto 1.5rem;
+    /* 圓角半徑：50% 變成圓形 */
+    border-radius: 50%;
+    /* 隱藏超出邊界的內容 */
+    overflow: hidden;
+    /* 邊框：4px，淺灰色 */
+    border: 4px solid #f0f0f0;
+    /* 陰影效果：4px 模糊，12px 擴散，黑色 10% 透明度 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 
+   頭像圖片
+   
+   說明：
+   - 寬高 100% 填滿容器
+   - object-fit: cover 保持寬高比，填滿容器
+*/
+.sidebar-avatar img {
+    /* 寬度：填滿容器 */
+    width: 100%;
+    /* 高度：填滿容器 */
+    height: 100%;
+    /* 保持寬高比，填滿容器 */
+    object-fit: cover;
+}
+
+/* 
+   名稱
+   
+   說明：
+   - 字體大小 1.5rem
+   - 字重 700（粗體）
+   - 深色文字
+*/
+.sidebar-name {
+    /* 字體大小：1.5rem */
+    font-size: 1.5rem;
+    /* 字重：700（粗體） */
+    font-weight: 700;
+    /* 文字顏色：深灰色 */
+    color: #2c3e50;
+    /* 邊距：上下 0，左右 0，下方 0.75rem */
+    margin: 0 0 0.75rem 0;
+}
+
+/* 
+   簡介文字
+   
+   說明：
+   - 字體大小 0.95rem
+   - 灰色文字
+   - 行高 1.6 便於閱讀
+*/
+.sidebar-bio {
+    /* 字體大小：0.95rem */
+    font-size: 0.95rem;
+    /* 文字顏色：灰色 */
+    color: #7f8c8d;
+    /* 行高：1.6 */
+    line-height: 1.6;
+    /* 邊距：上下 0，左右 0，下方 1.5rem */
+    margin: 0 0 1.5rem 0;
+}
+
+/* 
+   社群連結容器
+   
+   說明：
+   - 使用 flex 水平排列連結圖示
+   - justify-content: center 居中
+   - gap: 1rem 連結之間的距離
+*/
+.sidebar-links {
+    /* 使用 flex 佈局 */
+    display: flex;
+    /* 水平居中 */
+    justify-content: center;
+    /* 連結之間的距離 */
+    gap: 1rem;
+}
+
+/* 
+   社群連結圖示
+   
+   說明：
+   - 寬高 40px 的正方形
+   - border-radius: 50% 變成圓形
+   - 背景淺灰色，文字灰色
+   - 懸停時變成藍色背景，白色文字，向上移動
+*/
+.sidebar-links a {
+    /* 寬度：40px */
+    width: 40px;
+    /* 高度：40px */
+    height: 40px;
+    /* 使用 flex 佈局 */
+    display: flex;
+    /* 垂直居中 */
+    align-items: center;
+    /* 水平居中 */
+    justify-content: center;
+    /* 圓角半徑：50% 變成圓形 */
+    border-radius: 50%;
+    /* 背景顏色：淺灰色 */
+    background: #f0f0f0;
+    /* 文字顏色：灰色 */
+    color: #7f8c8d;
+    /* 平滑過渡動畫 */
+    transition: all 0.3s ease;
+    /* 移除連結底線 */
+    text-decoration: none;
+}
+
+/* 
+   社群連結圖示 - 懸停效果
+   
+   說明：
+   - 背景變成藍色
+   - 文字變成白色
+   - 向上移動 3px
+*/
+.sidebar-links a:hover {
+    /* 背景顏色：藍色 */
+    background: #3498db;
+    /* 文字顏色：白色 */
+    color: white;
+    /* 向上移動 3px */
+    transform: translateY(-3px);
+}
+
+/* 
+   社群連結圖示 - SVG 圖示
+   
+   說明：
+   - 寬高 20px
+*/
+.sidebar-links svg {
+    /* 寬度：20px */
+    width: 20px;
+    /* 高度：20px */
+    height: 20px;
+}
+
+/* 
+   側邊欄隱藏 - 響應式設計
+   
+   說明：
+   - 當容器寬度小於 1000px 時，隱藏側邊欄
+   - 這樣在小螢幕上只顯示卡片，不顯示側邊欄
+*/
+@media (max-width: 1000px) {
+    /* 隱藏側邊欄 */
+    .sidebar {
+        display: none;
+    }
+}

@@ -89,7 +89,7 @@ const displayPosts = [...pinnedPosts, ...regularPosts];
         class="hero"
         style={`background-image: url(${optimizedBackground.src});`}
       >
-        <a href="#hero-content-start" class="hero-card">
+        <div class="hero-card">
           <div id="hero-btn">
             <span class="blob blob-1"></span>
             <span class="blob blob-2"></span>
@@ -101,7 +101,7 @@ const displayPosts = [...pinnedPosts, ...regularPosts];
               <h1 class="title">ようこそ</h1>
             </div>
           </div>
-        </a>
+        </div>
         <div class="hero-image">
           <!-- 這裡放一張圖片或簡單的色塊圖形 -->
           <div class="placeholder-img"></div>
@@ -112,7 +112,11 @@ const displayPosts = [...pinnedPosts, ...regularPosts];
         <h2 class="section-title">最近更新</h2>
         <p class="section-subtitle">探索最新的文章、開發日誌和故事</p>
         
-        <div class="cards-grid">
+        {/* 主容器：卡片區域 + 側邊欄 */}
+        <div class="content-wrapper">
+          {/* 左側：文章卡片網格 */}
+          <div class="cards-section">
+            <div class="cards-grid">
           {displayPosts.map((post) => (
             <article class={`update-card ${post.data.pinned ? 'pinned-card' : ''}`}>
               {/* 卡片容器 - 不再是連結，只有按鈕是連結 */}
@@ -173,6 +177,44 @@ const displayPosts = [...pinnedPosts, ...regularPosts];
               </div>
             </article>
           ))}
+            </div>
+          </div>
+
+          {/* 右側：個人資訊側邊欄 */}
+          <aside class="sidebar">
+            {/* 頭像 */}
+            <div class="sidebar-avatar">
+              <img src="https://via.placeholder.com/150" alt="個人頭像" />
+            </div>
+
+            {/* 名稱 */}
+            <h3 class="sidebar-name">Your Name</h3>
+
+            {/* 簡介 */}
+            <p class="sidebar-bio">
+              這是你的個人簡介。你可以在這裡介紹自己、分享你的興趣和專業領域。
+            </p>
+
+            {/* 社群連結 */}
+            <div class="sidebar-links">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" title="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7"/>
+                </svg>
+              </a>
+              <a href="mailto:your.email@example.com" title="Email">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </a>
+            </div>
+          </aside>
         </div>
         
         <div class="view-all-links">
@@ -226,7 +268,16 @@ const displayPosts = [...pinnedPosts, ...regularPosts];
     });
   }
 
-
+  // Hero 卡片點擊事件 - 平滑滾動到內容區域
+  const heroCard = document.querySelector(".hero-card");
+  if (heroCard) {
+    heroCard.addEventListener("click", () => {
+      const targetElement = document.querySelector("#hero-content-start");
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
 </script>
 
 <style>
