@@ -152,7 +152,7 @@ const sortedVersions = Object.entries(versionFrequency)
               {sortedStatuses.map((status) => (
                 <label class="filter-item">
                   <input type="checkbox" value={status} class="status-filter" />
-                  <span class="filter-label">{statusLabels[status]}</span>
+                  <span class="filter-label">{statusLabels[status as keyof typeof statusLabels]}</span>
                   <span class="filter-count">{statusFrequency[status]}</span>
                 </label>
               ))}

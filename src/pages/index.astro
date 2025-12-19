@@ -45,11 +45,23 @@ const storyPosts = await getCollection("story");
 /** 
  * 合併所有內容並添加類型標記
  * 這樣可以在模板中區分不同類型的文章
+ * 
+ * 注意：post.id 現在的格式是 "zh/slug" 或 "ja/slug"
+ * 需要提取語言和 slug 來生成正確的 URL
  */
 const allPosts = [
-  ...blogPosts.map(post => ({ ...post, type: "blog" as const, url: `/blog/${post.id}` })),
-  ...devlogPosts.map(post => ({ ...post, type: "devlog" as const, url: `/devlog/${post.id}` })),
-  ...storyPosts.map(post => ({ ...post, type: "story" as const, url: `/story/${post.id}` }))
+  ...blogPosts.map(post => {
+    const [language, slug] = post.id.split('/');
+    return { ...post, type: "blog" as const, url: `/blog/${language}/${slug}` };
+  }),
+  ...devlogPosts.map(post => {
+    const [language, slug] = post.id.split('/');
+    return { ...post, type: "devlog" as const, url: `/devlog/${language}/${slug}` };
+  }),
+  ...storyPosts.map(post => {
+    const [language, slug] = post.id.split('/');
+    return { ...post, type: "story" as const, url: `/story/${language}/${slug}` };
+  })
 ];
 
 /** 
