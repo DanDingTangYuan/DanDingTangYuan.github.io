@@ -1,0 +1,491 @@
+/* ============================================================================
+   About 頁面樣式
+   ============================================================================
+   
+   結構：
+   1. 動畫定義 (@keyframes)
+   2. Hero 背景區域
+   3. 主容器佈局（左右兩欄）
+   4. 左邊內容區域
+   5. 右邊側邊欄
+   6. 全畫面圖片預覽 Modal
+   7. 響應式設計
+*/
+
+/* ============================================================================
+   第一部分：動畫定義
+   ============================================================================
+   
+   說明：
+   - fadeIn/fadeOut：背景層的淡入淡出
+   - scaleIn/scaleOut：圖片的縮放動畫
+   - 所有動畫時長：0.3 秒
+*/
+
+/* 背景淡入動畫 - Modal 打開時使用 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 背景淡出動畫 - Modal 關閉時使用 */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* 圖片放大動畫 - Modal 打開時使用
+   從 80% 大小放大到 100% */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 圖片縮小動畫 - Modal 關閉時使用
+   從 100% 大小縮小到 80% */
+@keyframes scaleOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* ============================================================================
+   第二部分：Hero 背景區域
+   ============================================================================
+   
+   說明：
+   - 全寬背景圖片區塊
+   - 高度 400px
+   - 預留頂部 80px 給導覽列
+   - 內容垂直置中
+*/
+
+.about-hero {
+  width: 100%;
+  height: 400px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding-top: 80px;
+}
+
+/* Hero 背景遮罩層 - 降低背景圖片亮度 */
+.about-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Hero 內容容器 - 標題文字 */
+.about-hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: white;
+}
+
+/* Hero 標題 */
+.about-hero-content h1 {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: bold;
+  color: beige;
+}
+
+/* ============================================================================
+   第三部分：主容器佈局（左右兩欄）
+   ============================================================================
+   
+   說明：
+   - 使用 flexbox 佈局
+   - 左邊：主要內容（彈性寬度）
+   - 右邊：側邊欄（固定 280px）
+   - 間距：2em
+   - 最大寬度：1200px
+*/
+
+.about-wrapper {
+  display: flex;
+  gap: 2em;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2em 1em;
+}
+
+/* ============================================================================
+   第四部分：左邊內容區域
+   ============================================================================
+   
+   說明：
+   - 彈性寬度，填滿剩餘空間
+   - 包含多個內容區塊（section）
+*/
+
+.about-main {
+  flex: 1;
+  min-width: 0;
+  color: rgb(var(--gray-dark));
+}
+
+/* 內容區塊 - 每個章節之間的間距 */
+.about-section {
+  margin-bottom: 2em;
+}
+
+/* 章節標題 */
+.about-section h2 {
+  margin: 1.5em 0 0.5em 0;
+  font-size: 1.3rem;
+}
+
+/* 章節段落文字 */
+.about-section p {
+  margin: 0.5em 0;
+  line-height: 1.6;
+}
+
+/* 章節列表 */
+.about-section ul {
+  margin: 1em 0;
+  padding-left: 2em;
+}
+
+/* 列表項目 */
+.about-section li {
+  margin: 0.5em 0;
+  line-height: 1.6;
+}
+
+/* ============================================================================
+   第五部分：右邊側邊欄
+   ============================================================================
+   
+   說明：
+   - 固定寬度 280px
+   - 包含：頭像、名稱、簡介、統計數據、社群連結
+   - 所有內容置中對齊
+*/
+
+.about-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+/* 側邊欄內容容器 - 文字置中 */
+.sidebar-content {
+  text-align: center;
+}
+
+/* ============================================================================
+   側邊欄 - 頭像區塊
+   ============================================================================
+   
+   調整頭像區塊大小的方法：
+   
+   1. 調整容器的外邊距（margin）：
+      - margin-bottom: 1em;  <- 改這個數字調整下方空間
+      - 例如：margin-bottom: 2em; 會增加下方空間
+   
+   2. 調整容器的內邊距（padding）：
+      - 在 .sidebar-avatar 加上 padding: 1em;
+      - 例如：padding: 1.5em; 會增加容器內部空間
+   
+   3. 調整容器的寬度和高度：
+      - 在 .sidebar-avatar 加上 width: 150px; height: 150px;
+      - 這樣會改變整個容器的大小
+*/
+
+.sidebar-avatar {
+  margin-bottom: 1em;
+  width: 200px;
+  height: 200px;
+}
+
+/* 頭像圖片 - 圓形頭像
+   ============================================================================
+   
+   調整頭像圖片大小的方法：
+   
+   1. 改變寬度和高度（width 和 height）：
+      - width: 120px;   <- 改這個數字調整寬度
+      - height: 120px;  <- 改這個數字調整高度
+      - 例如：width: 150px; height: 150px; 會讓頭像變大
+      - 例如：width: 80px; height: 80px; 會讓頭像變小
+   
+   2. 改變邊框粗度（border）：
+      - border: 3px solid rgb(var(--accent));
+      - 改 3px 為其他數字，例如 5px 會讓邊框更粗
+   
+   3. 改變邊框顏色：
+      - rgb(var(--accent)) 是強調色
+      - 可改為其他顏色，例如 rgb(100, 100, 100)
+*/
+
+.sidebar-avatar img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgb(var(--accent));
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+/* 頭像懸停效果 - 輕微放大 */
+.sidebar-avatar img:hover {
+  transform: scale(1.05);
+}
+
+/* 側邊欄名稱 */
+.sidebar-name {
+  margin: 1em 0 0.5em 0;
+  font-size: 1.5rem;
+}
+
+/* 側邊欄簡介文字 */
+.sidebar-bio {
+  margin: 0.5em 0 1.5em 0;
+  font-size: 0.9rem;
+  color: rgb(var(--gray));
+  line-height: 1.5;
+}
+
+/* ============================================================================
+   側邊欄 - 統計數據區塊
+   ============================================================================
+   
+   說明：
+   - 顯示文章、開發、故事的數量
+   - 上下邊框分隔
+   - 水平排列三個統計項目
+*/
+
+.sidebar-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1.5em;
+  padding: 1em 0;
+  border-top: 1px solid rgb(var(--gray-light));
+  border-bottom: 1px solid rgb(var(--gray-light));
+}
+
+/* 單個統計項目 */
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 統計數字 - 強調色 */
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+/* 統計標籤 */
+.stat-label {
+  font-size: 0.8rem;
+  color: rgb(var(--gray));
+}
+
+/* ============================================================================
+   側邊欄 - 社群連結區塊
+   ============================================================================
+   
+   說明：
+   - 水平排列社群媒體圖標
+   - 圓形按鈕設計
+   - 懸停時改變背景色
+*/
+
+.sidebar-links {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
+/* 社群連結按鈕 */
+.sidebar-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgb(var(--gray-light));
+  color: rgb(var(--text-primary));
+  transition: background-color 0.3s ease;
+}
+
+/* 社群連結按鈕 - 懸停效果 */
+.sidebar-links a:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* 社群連結圖標 */
+.sidebar-links svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================================================
+   第六部分：全畫面圖片預覽 Modal
+   ============================================================================
+   
+   說明：
+   - 點擊頭像時顯示全畫面預覽
+   - 支援 ESC 鍵和點擊背景關閉
+   - 包含淡入淡出和縮放動畫效果
+   
+   動畫流程：
+   1. 打開：背景淡入 + 圖片放大
+   2. 關閉：背景淡出 + 圖片縮小
+   
+   狀態類名：
+   - .active：Modal 顯示中
+   - .closing：Modal 關閉中（動畫進行中）
+*/
+
+/* Modal 背景層 - 初始隱藏
+   ============================================================================
+   
+   使用 visibility 和 opacity 而不是 display 的原因：
+   - display: none 會導致滾動條消失，頁面會抖動
+   - visibility: hidden 和 opacity: 0 可以保持頁面佈局穩定
+*/
+
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  display: flex;
+}
+
+/* Modal 顯示時 - 淡入動畫
+   ============================================================================
+   
+   說明：
+   - visibility: visible 讓元素可以互動
+   - opacity: 1 讓背景完全不透明
+   - animation: fadeIn 0.3s ease-out 執行淡入動畫
+*/
+
+.image-modal.active {
+  visibility: visible;
+  opacity: 1;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Modal 隱藏時 - 淡出動畫
+   ============================================================================
+   
+   說明：
+   - animation: fadeOut 0.3s ease-out forwards
+   - forwards 讓動畫完成後保持最終狀態（opacity: 0）
+   - 防止動畫完成後突然閃現
+*/
+
+.image-modal.closing {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+/* Modal 內容容器 */
+.modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal 中的圖片 - 打開時放大動畫
+   ============================================================================
+   
+   說明：
+   - animation: scaleIn 0.3s ease-out
+   - 圖片從 80% 大小放大到 100%
+   - 同時從透明淡入到不透明
+*/
+
+.modal-content img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Modal 隱藏時圖片縮小動畫
+   ============================================================================
+   
+   說明：
+   - 當 Modal 有 .closing 類名時，圖片執行縮小動畫
+   - 圖片從 100% 大小縮小到 80%
+   - 同時從不透明淡出到透明
+*/
+
+.image-modal.closing .modal-content img {
+  animation: scaleOut 0.3s ease-out;
+}
+
+/* ============================================================================
+   第七部分：響應式設計 - 平板及以下
+   ============================================================================
+   
+   說明：
+   - 改為上下排列（column）
+   - 側邊欄寬度改為 100%
+   - 標題字體縮小
+*/
+
+@media (max-width: 768px) {
+  .about-wrapper {
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  .about-sidebar {
+    width: 100%;
+  }
+
+  .about-hero-content h1 {
+    font-size: 2rem;
+  }
+}

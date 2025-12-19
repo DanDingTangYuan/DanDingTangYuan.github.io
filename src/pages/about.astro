@@ -4,17 +4,261 @@
  * 
  * 用途：
  * - 顯示網站的關於頁面
- * - 使用 BlogPost 佈局以保持一致的頁面風格
+ * - Hero 背景圖 + 左右兩欄佈局
+ * - 左邊：內容，右邊：側邊欄（類似 index）
+ * - 支援全畫面圖片預覽功能
  * 
  * 路由：/about
+ * 
+ * 功能：
+ * - Hero 背景圖片區域
+ * - 左邊主要內容（多個章節）
+ * - 右邊側邊欄（頭像、名稱、簡介、統計、社群連結）
+ * - 點擊頭像可全畫面預覽圖片
  */
 
-import Layout from "../layouts/BlogPost.astro";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import { getImage } from "astro:assets";
+import myBackground from "../assets/hero_background.jpg";
+import "../styles/index.css";
+import "../styles/about.css";
+
+// 優化背景圖片為 WebP 格式
+const optimizedBackground = await getImage({
+  src: myBackground,
+  format: "webp",
+});
 ---
 
-{/* 使用 BlogPost 佈局顯示關於頁面 */}
-<Layout
-  title="About Me"
-  description="Lorem ipsum dolor sit amet"
-  pubDate={new Date("August 08 2021")}
-/>
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title="About Me" description="了解我的故事、興趣和創作理念" />
+  </head>
+  <body>
+    <Header />
+
+    <main>
+      {/* ========================================================================
+          Hero 背景區域
+          ======================================================================== */}
+      <section
+        class="about-hero"
+        style={`background-image: url(${optimizedBackground.src});`}
+      >
+        <div class="about-hero-content">
+          <h1>關於我</h1>
+        </div>
+      </section>
+
+      {/* ========================================================================
+          主容器：左邊內容 + 右邊側邊欄
+          ======================================================================== */}
+      <div class="about-wrapper">
+        {/* ====================================================================
+            左邊：主要內容區域
+            ==================================================================== */}
+        <article class="about-main">
+          {/* 介紹段落 */}
+          <section class="about-section">
+            <p>
+              歡迎來到我的世界，言葉之栞。我是個腦動大開的天才(?)，致力於將我所有天馬行空的想法全部記錄下來。
+            </p>
+          </section>
+
+          {/* 關於我章節 */}
+          <section class="about-section">
+            <h2>關於我？</h2>
+            <p>
+              我是言葉（ことのは），一個不專業的小說家、繪師兼碼農。我有許多筆名，看到好奇的話都可以來問問看。
+            </p>
+          </section>
+
+          {/* 我的愛好章節 */}
+          <section class="about-section">
+            <h2>我的愛好</h2>
+            <p>我的愛好相當廣泛，但都沒有甚麼特別深入的，以下範圍都算是我的愛好：</p>
+            <ul>
+              <li><strong>創作</strong> - 內容包括小說、漫畫、音樂等。</li>
+              <li><strong>遊戲開發</strong> - 截至 2025.12.20 的當下，我手上正在研究開發一款 SRPG 的遊戲，未來有機會也會將開發 Log 上傳到這。</li>
+              <li><strong>動畫、漫畫、小說</strong> - 你可以跟我討論或是推坑我，我都很歡迎。</li>
+              <li><strong>遊戲</strong> - 我主要在玩的是 FPS 再來就是些策略跟經營類遊戲了，也歡迎推坑。</li>
+            </ul>
+          </section>
+        </article>
+
+        {/* ====================================================================
+            右邊：側邊欄
+            ==================================================================== */}
+        <aside class="about-sidebar">
+          <div class="sidebar-content">
+            {/* 頭像 - 可點擊預覽 */}
+            <div class="sidebar-avatar" id="avatar-trigger">
+              <img src="https://hackmd.io/_uploads/Bk3Z1Uzm-e.png" alt="個人頭像" />
+            </div>
+
+            {/* 名稱 */}
+            <h3 class="sidebar-name">言葉</h3>
+
+            {/* 簡介 */}
+            <p class="sidebar-bio">
+              我是言葉，一個不專業的小說家兼繪師兼碼農。<br><br>
+              是個一是處的天才。大概吧...
+            </p>
+
+            {/* 統計數據 - 待實現
+            ====================================================================
+            TODO: 動態統計各個內容集合的文章數
+            
+            實現方式：
+            1. 使用 getCollection() 獲取 blog、devlog、story 集合
+            2. 計算各集合的 length
+            3. 顯示在統計區塊
+            
+            暫時註解，等文章數量增加後再實現
+            ====================================================================
+            
+            <div class="sidebar-stats">
+              <div class="stat-item">
+                <span class="stat-number">9</span>
+                <span class="stat-label">文章</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">5</span>
+                <span class="stat-label">開發</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">6</span>
+                <span class="stat-label">故事</span>
+              </div>
+            </div>
+            */}
+
+            {/* 社群連結 */}
+            <div class="sidebar-links">
+              <a href="https://github.com/DanDingTangYuan" target="_blank" rel="noopener noreferrer" title="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </a>
+              <a href="https://x.com/kaichou_73" target="_blank" rel="noopener noreferrer" title="Twitter">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7"/>
+                </svg>
+              </a>
+              <a href="mailto:your.email@example.com" title="Email">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
+                  <polyline points="22,6 12,13 2,6" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <Footer />
+
+    {/* ========================================================================
+        全畫面圖片預覽 Modal
+        ======================================================================== */}
+    <div class="image-modal" id="image-modal">
+      <div class="modal-content">
+        <img id="modal-image" src="" alt="預覽圖片" />
+      </div>
+    </div>
+
+    {/* ========================================================================
+        全畫面圖片預覽功能 JavaScript
+        ======================================================================== */}
+    <script>
+      /**
+       * 全畫面圖片預覽功能
+       * 
+       * 功能說明：
+       * - 點擊頭像時打開全畫面預覽
+       * - 支援三種關閉方式：
+       *   1. 點擊黑色背景
+       *   2. 按 ESC 鍵
+       * 
+       * 動畫效果：
+       * - 打開：背景淡入 + 圖片放大
+       * - 關閉：背景淡出 + 圖片縮小
+       * 
+       * 狀態管理：
+       * - .active：Modal 顯示中
+       * - .closing：Modal 關閉中（動畫進行中）
+       */
+
+      // 獲取 DOM 元素
+      const avatarTrigger = document.getElementById('avatar-trigger');
+      const imageModal = document.getElementById('image-modal');
+      const modalImage = document.getElementById('modal-image') as HTMLImageElement;
+
+      /**
+       * 關閉 Modal 的函數
+       * 
+       * 流程：
+       * 1. 添加 .closing 類名，觸發淡出和縮小動畫
+       * 2. 等待 300ms（動畫時長）
+       * 3. 移除 .active 和 .closing 類名，隱藏 Modal
+       */
+      function closeModal() {
+        if (imageModal) {
+          imageModal.classList.add('closing');
+          setTimeout(() => {
+            imageModal?.classList.remove('active', 'closing');
+          }, 300); // 等待動畫完成
+        }
+      }
+
+      /**
+       * 點擊頭像時打開 Modal
+       * 
+       * 流程：
+       * 1. 獲取頭像圖片的 src
+       * 2. 設置 Modal 中的圖片 src
+       * 3. 添加 .active 類名，觸發淡入和放大動畫
+       */
+      if (avatarTrigger) {
+        avatarTrigger.addEventListener('click', () => {
+          const img = avatarTrigger.querySelector('img') as HTMLImageElement;
+          if (img && modalImage) {
+            modalImage.src = img.src;
+            imageModal?.classList.add('active');
+          }
+        });
+      }
+
+      /**
+       * 點擊 Modal 背景時關閉
+       * 
+       * 說明：
+       * - 只有點擊背景（imageModal 本身）才會關閉
+       * - 點擊圖片不會關閉
+       */
+      if (imageModal) {
+        imageModal.addEventListener('click', (e) => {
+          if (e.target === imageModal) {
+            closeModal();
+          }
+        });
+      }
+
+      /**
+       * 按 ESC 鍵關閉 Modal
+       * 
+       * 說明：
+       * - 只有在 Modal 顯示中（.active）才會響應 ESC 鍵
+       */
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && imageModal?.classList.contains('active')) {
+          closeModal();
+        }
+      });
+    </script>
+  </body>
+</html>
